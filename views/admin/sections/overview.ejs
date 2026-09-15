@@ -1,0 +1,116 @@
+<!-- OVERVIEW -->
+<div class="pnl live-clock-card mb-1">
+  <div class="pnl-b">
+    <div style="display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem"><span class="live-dot"></span><span style="color:#22c55e;font-size:.78rem;font-weight:700;letter-spacing:1px">LIVE</span></div>
+      <div><span id="liveDate" style="color:rgba(255,255,255,.7);font-size:.85rem;font-weight:500"></span></div>
+    </div>
+    <div id="liveClock">--:--:--</div>
+  </div>
+</div>
+
+<div class="dash-cards">
+  <div class="dc"><div class="dc-top"><div class="dc-icon g"><i class="fas fa-users"></i></div><span class="dc-lbl">Members</span></div><div class="dc-val"><%= stats.totalMembers || '0' %></div><span class="dc-sub up"><i class="fas fa-arrow-up"></i> <%= stats.memberGrowth || 0 %> this month</span></div>
+  <div class="dc"><div class="dc-top"><div class="dc-icon y"><i class="fas fa-newspaper"></i></div><span class="dc-lbl">News Articles</span></div><div class="dc-val"><%= stats.news %></div><span class="dc-sub"><%= stats.publishedNews %> published</span></div>
+  <div class="dc"><div class="dc-top"><div class="dc-icon b"><i class="fas fa-calendar-alt"></i></div><span class="dc-lbl">Events</span></div><div class="dc-val"><%= stats.events %></div><span class="dc-sub"><%= stats.upcomingEvents %> upcoming</span></div>
+  <div class="dc"><div class="dc-top"><div class="dc-icon s"><i class="fas fa-photo-film"></i></div><span class="dc-lbl">Gallery</span></div><div class="dc-val"><%= stats.gallery %></div><span class="dc-sub">Photos</span></div>
+  <div class="dc"><div class="dc-top"><div class="dc-icon r"><i class="fas fa-envelope"></i></div><span class="dc-lbl">Unread Messages</span></div><div class="dc-val"><%= stats.unreadMessages %></div><span class="dc-sub"><%= stats.totalMessages %> total</span></div>
+  <div class="dc"><div class="dc-top"><div class="dc-icon p"><i class="fas fa-eye"></i></div><span class="dc-lbl">Views Today</span></div><div class="dc-val"><%= stats.viewsToday %></div><span class="dc-sub">Live tracking</span></div>
+</div>
+
+<div class="grid-2">
+  <div class="pnl">
+    <div class="pnl-h"><h3><i class="fas fa-chart-area"></i> Page Views — Last 14 Days</h3></div>
+    <div class="pnl-b"><div class="cht"><canvas id="viewsChart"></canvas></div></div>
+  </div>
+  <div class="pnl">
+    <div class="pnl-h"><h3><i class="fas fa-chart-pie"></i> Content Breakdown</h3></div>
+    <div class="pnl-b"><div class="cht"><canvas id="contentChart"></canvas></div></div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <div class="pnl">
+    <div class="pnl-h"><h3><i class="fas fa-envelope"></i> Recent Messages</h3><a href="/sacxc-cms/messages" class="fbtn sm gd">View all <i class="fas fa-arrow-right"></i></a></div>
+    <div class="pnl-b">
+      <% if(!recentMessages || recentMessages.length===0){ %>
+        <div class="empty"><i class="fas fa-inbox"></i><p>No messages yet</p></div>
+      <% } else { %>
+        <% recentMessages.slice(0,5).forEach(m=>{ %>
+          <div class="msg-card <%= m.read===0?'unread':'' %>">
+            <h4><span><%= m.first_name %> <%= m.last_name %></span><span class="mmeta"><%= new Date(m.created_at).toLocaleDateString() %></span></h4>
+            <div class="mmeta"><i class="fas fa-envelope" style="color:var(--navy);margin-right:.3rem"></i><%= m.email %> · <%= m.subject || 'General Inquiry' %></div>
+            <div class="mbody"><%= (m.message||'').substring(0,140) %><%= (m.message||'').length>140?'…':'' %></div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+  <div class="pnl">
+    <div class="pnl-h"><h3><i class="fas fa-calendar-check"></i> Upcoming Events</h3><a href="/sacxc-cms/events" class="fbtn sm gd">Manage <i class="fas fa-arrow-right"></i></a></div>
+    <div class="pnl-b">
+      <% if(!upcomingEvents || upcomingEvents.length===0){ %>
+        <div class="empty"><i class="fas fa-calendar"></i><p>No upcoming events</p></div>
+      <% } else { %>
+        <% upcomingEvents.forEach(ev=>{ %>
+          <div class="ic">
+            <div style="background:var(--accent-50);color:var(--accent);width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:var(--font);text-align:center;line-height:1.1;flex-shrink:0">
+              <div><div style="font-size:1.1rem"><%= new Date(ev.event_date).getDate() %></div><div style="font-size:.55rem;text-transform:uppercase"><%= new Date(ev.event_date).toLocaleDateString('en',{month:'short'}) %></div></div>
+            </div>
+            <div class="ic-info"><div class="ic-title"><%= ev.title %></div><div class="ic-sub"><i class="fas fa-location-dot"></i> <%= ev.location || 'TBA' %> · <%= ev.event_time || 'TBA' %></div></div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<div class="pnl">
+  <div class="pnl-h"><h3><i class="fas fa-newspaper"></i> Recent News</h3><a href="/sacxc-cms/news" class="fbtn sm gd">Manage <i class="fas fa-arrow-right"></i></a></div>
+  <div class="pnl-b">
+    <% if(!recentNews || recentNews.length===0){ %>
+      <div class="empty"><i class="fas fa-newspaper"></i><p>No news yet</p></div>
+    <% } else { %>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Title</th><th>Tag</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody>
+          <% recentNews.forEach(a=>{ %>
+            <tr>
+              <td><strong><%= a.title %></strong><% if(a.featured){ %> <span class="badge featured">Featured</span><% } %></td>
+              <td><span class="badge draft"><%= a.tag %></span></td>
+              <td><span class="badge <%= a.published?'on':'off' %>"><%= a.published?'Published':'Draft' %></span></td>
+              <td><%= new Date(a.created_at).toLocaleDateString() %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+  </div>
+</div>
+
+<script>
+(function(){
+  // Live clock
+  function tick(){
+    const n=new Date();
+    document.getElementById('liveClock').textContent=n.toLocaleTimeString('en-GB');
+    document.getElementById('liveDate').textContent=n.toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  }
+  tick();setInterval(tick,1000);
+
+  // Views chart
+  const pv=<%- JSON.stringify(pageViews || []) %>;
+  const ctx1=document.getElementById('viewsChart')?.getContext('2d');
+  if(ctx1){
+    const grad=ctx1.createLinearGradient(0,0,0,280);
+    grad.addColorStop(0,'rgba(0,0,86,.28)');grad.addColorStop(1,'rgba(0,0,86,.01)');
+    new Chart(ctx1,{type:'line',data:{labels:pv.map(d=>d.date.slice(5)),datasets:[{label:'Views',data:pv.map(d=>d.views),borderColor:'#000056',backgroundColor:grad,fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#e30000',pointBorderColor:'#fff',pointBorderWidth:2,pointHoverRadius:6,borderWidth:2.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#111827',padding:10,cornerRadius:8,displayColors:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:11}}},x:{grid:{display:false},ticks:{font:{size:10}}}},interaction:{intersect:false,mode:'index'}}});
+  }
+
+  // Content chart
+  const c2=document.getElementById('contentChart');
+  if(c2){
+    new Chart(c2,{type:'doughnut',data:{labels:['News','Events','Gallery','Partners','Leadership','Resources'],datasets:[{data:[<%= stats.news %>,<%= stats.events %>,<%= stats.gallery %>,<%= stats.partners %>,<%= stats.leadership %>,<%= stats.resources %>],backgroundColor:['#000056','#e30000','#2563EB','#059669','#F59E0B','#7C3AED'],borderWidth:0,hoverOffset:10}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'bottom',labels:{font:{size:11,weight:'500'},padding:10,usePointStyle:true,pointStyle:'circle'}}}}});
+  }
+})();
+</script>

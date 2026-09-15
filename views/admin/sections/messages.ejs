@@ -1,0 +1,45 @@
+<%
+const unread = items.filter(m => !m.read).length;
+const read = items.length - unread;
+%>
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-envelope"></i> Contact Messages
+      <% if(unread > 0){ %><span class="badge on" style="margin-left:.4rem;background:var(--red);color:#fff"><%= unread %> unread</span><% } %>
+      <span class="badge draft" style="margin-left:.4rem;background:var(--green-50);color:var(--navy)"><%= read %> read · <%= items.length %> total</span>
+    </h3>
+    <% if(unread > 0){ %>
+      <form method="POST" action="/sacxc-cms/messages/mark-all-read" style="display:inline"><button type="submit" class="fbtn o"><i class="fas fa-check-double"></i> Mark all as read</button></form>
+    <% } %>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-inbox"></i><p>No messages yet.</p></div>
+    <% } else { %>
+      <% items.forEach(m=>{ %>
+        <div class="msg-card <%= m.read===0?'unread':'read' %>" style="background:<%= m.read===0?'#fff':'var(--bg,#f9fafb)' %>;padding:1rem;border-radius:12px;border:1px solid <%= m.read===0?'var(--green-100,#D6EADD)':'var(--border)' %>;margin-bottom:.8rem;<%= m.read===0?'border-left:4px solid var(--navy);':'' %>">
+          <h4 style="font-size:.95rem;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap">
+            <span><i class="fas fa-user-circle" style="color:<%= m.read===0?'var(--navy)':'var(--muted)' %>;margin-right:.3rem"></i><%= m.first_name %> <%= m.last_name %>
+              <% if(m.read===0){ %><span class="badge on" style="margin-left:.4rem;background:var(--red);color:#fff;font-size:.65rem">NEW</span><% } %>
+            </span>
+            <span style="font-size:.74rem;color:var(--muted);font-weight:500"><%= new Date(m.created_at).toLocaleString() %></span>
+          </h4>
+          <div style="font-size:.82rem;margin-bottom:.5rem;color:var(--muted)">
+            <i class="fas fa-envelope" style="color:var(--navy);margin-right:.3rem"></i><a href="mailto:<%= m.email %>" style="color:var(--navy);font-weight:600"><%= m.email %></a>
+            · <strong style="color:var(--text)"><%= m.subject || 'General Inquiry' %></strong>
+          </div>
+          <div style="background:<%= m.read===0?'var(--green-50,#eef0fb)':'#fff' %>;padding:.8rem;border-radius:8px;font-size:.88rem;line-height:1.6;color:var(--text);margin-bottom:.6rem;white-space:pre-wrap"><%= m.message %></div>
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+            <% if(m.read===0){ %>
+              <form method="POST" action="/sacxc-cms/messages/<%= m.id %>/read" style="display:inline"><button class="fbtn sm gd" type="submit"><i class="fas fa-check"></i> Mark as Read</button></form>
+            <% } else { %>
+              <form method="POST" action="/sacxc-cms/messages/<%= m.id %>/unread" style="display:inline"><button class="fbtn sm o" type="submit"><i class="fas fa-envelope"></i> Mark Unread</button></form>
+            <% } %>
+            <a href="mailto:<%= m.email %>?subject=Re: <%= encodeURIComponent(m.subject || 'Your message to SACXC') %>" class="fbtn sm g"><i class="fas fa-reply"></i> Reply</a>
+            <form method="POST" action="/sacxc-cms/messages/<%= m.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete this message?')"><button class="fbtn sm rd" type="submit"><i class="fas fa-trash"></i> Delete</button></form>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</div>

@@ -1,0 +1,83 @@
+<!-- NEWS -->
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-newspaper"></i> News Articles <span class="badge draft" style="margin-left:.4rem;background:var(--green-50);color:var(--navy)"><%= items.length %> total</span></h3>
+    <button class="fbtn g" onclick="openItemModal(null)"><i class="fas fa-plus"></i> New Article</button>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-newspaper"></i><p>No articles yet. Click "New Article" to publish your first story.</p></div>
+    <% } else { %>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Date</th><th></th></tr></thead>
+        <tbody>
+          <% items.forEach(a=>{ %>
+            <tr>
+              <td>
+                <strong><%= a.title %></strong>
+                <% if(a.featured){ %> <span class="badge featured">Featured</span><% } %>
+              </td>
+              <td><span class="badge draft"><%= a.tag %></span></td>
+              <td><span class="badge <%= a.published?'on':'off' %>"><%= a.published?'Published':'Draft' %></span></td>
+              <td><%= new Date(a.created_at).toLocaleDateString() %></td>
+              <td><div class="ic-acts">
+                <button class="be" onclick='openItemModal(<%- JSON.stringify(a).replace(/</g,"\\u003c") %>)'><i class="fas fa-edit"></i></button>
+                <form method="POST" action="/sacxc-cms/news/<%= a.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete this article?')"><button class="bd" type="submit"><i class="fas fa-trash"></i></button></form>
+              </div></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-back" id="itemModal">
+  <div class="modal" style="max-width:760px">
+    <div class="modal-h"><h3 id="modalTitle">New Article</h3><button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button></div>
+    <form id="itemForm" method="POST" enctype="multipart/form-data">
+      <div class="modal-b">
+        <div class="fg"><label>Article Title</label><input type="text" name="title" id="f_title" required placeholder="What happened? Give it a headline"></div>
+        <div class="fr">
+          <div class="fg"><label>Category</label><select name="tag" id="f_tag"><option>General</option><option>Training</option><option>Governance</option><option>Partnership</option><option>Growth</option><option>Strategy</option><option>Events</option></select></div>
+          <div class="fg"><label>Author</label><input type="text" name="author" id="f_author" value="SACXC Communications"></div>
+        </div>
+        <div class="fg"><label>Short Summary</label><textarea name="excerpt" id="f_excerpt" rows="2" maxlength="500" placeholder="One or two sentences shown in news listings"></textarea></div>
+        <div class="fg"><label>Article Body</label><div id="f_content" class="rich-editor" data-name="content" data-placeholder="Write the full article here. Use the toolbar for headings, bold, lists, and links."></div></div>
+        <div class="fg"><label>Featured Image</label><input type="file" name="image" accept="image/*"><input type="hidden" name="existing_image" id="f_existing_image"><div id="f_img_preview" style="margin-top:.5rem"></div></div>
+        <div class="fr">
+          <label class="chk-row"><input type="checkbox" name="published" id="f_published" value="1"> Published</label>
+          <label class="chk-row"><input type="checkbox" name="featured" id="f_featured" value="1"> Featured on homepage</label>
+        </div>
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeItemModal()">Cancel</button>
+        <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save Article</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openItemModal(item){
+  const m=document.getElementById('itemModal'),f=document.getElementById('itemForm');
+  document.getElementById('modalTitle').textContent=item?'Edit Article':'New Article';
+  document.getElementById('f_title').value=item?item.title:'';
+  document.getElementById('f_tag').value=item?item.tag:'General';
+  document.getElementById('f_author').value=item?item.author:'SACXC Communications';
+  document.getElementById('f_excerpt').value=item?(item.excerpt||''):'';
+  const ed=document.getElementById('f_content');
+  if(ed._quill) ed._quill.root.innerHTML=item?(item.content||''):'';
+  else ed.innerHTML=item?(item.content||''):'';
+  document.getElementById('f_existing_image').value=item?(item.image_url||''):'';
+  document.getElementById('f_published').checked=item?!!item.published:true;
+  document.getElementById('f_featured').checked=item?!!item.featured:false;
+  const ip=document.getElementById('f_img_preview');
+  ip.innerHTML=item&&item.image_url?`<img src="${item.image_url}" style="max-height:100px;border-radius:8px;border:1px solid var(--border)">`:'';
+  f.action=item?'/sacxc-cms/news/'+item.id:'/sacxc-cms/news';
+  m.classList.add('open');
+}
+function closeItemModal(){document.getElementById('itemModal').classList.remove('open')}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeItemModal()});
+</script>

@@ -1,0 +1,79 @@
+<!-- HERO SLIDER -->
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-images"></i> Homepage Hero Slides</h3>
+    <button class="fbtn g" onclick="openItemModal(null)"><i class="fas fa-plus"></i> New Slide</button>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-image"></i><p>No slides yet</p></div>
+    <% } else { %>
+      <% items.forEach(s=>{ %>
+        <div class="ic">
+          <% if(s.image_url){ %><img src="<%= s.image_url %>" alt=""><% } else { %><div style="width:48px;height:48px;border-radius:8px;background:var(--green-50);display:flex;align-items:center;justify-content:center;color:var(--navy);flex-shrink:0"><i class="fas fa-image"></i></div><% } %>
+          <div class="ic-info">
+            <div class="ic-title"><%= s.title %> <% if(s.title_accent){ %><span style="color:var(--accent)"><%= s.title_accent %></span><% } %></div>
+            <div class="ic-sub"><%= s.badge ? '['+s.badge+'] ' : '' %><%= (s.subtitle||'').substring(0,80) %></div>
+          </div>
+          <span class="badge <%= s.active?'on':'off' %>"><%= s.active?'Active':'Hidden' %></span>
+          <div class="ic-acts">
+            <button class="be" onclick='openItemModal(<%- JSON.stringify(s).replace(/</g,"\\u003c") %>)'><i class="fas fa-edit"></i></button>
+            <form method="POST" action="/sacxc-cms/slides/<%= s.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete this slide?')"><button class="bd" type="submit"><i class="fas fa-trash"></i></button></form>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</div>
+
+<div class="modal-back" id="itemModal">
+  <div class="modal">
+    <div class="modal-h"><h3 id="modalTitle">New Slide</h3><button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button></div>
+    <form id="itemForm" method="POST" enctype="multipart/form-data">
+      <div class="modal-b">
+        <div class="fg"><label>Badge (small label above title)</label><input type="text" name="badge" id="f_badge" placeholder="Empowering Workers Since 2012"></div>
+        <div class="fr">
+          <div class="fg"><label>Title (first part) *</label><input type="text" name="title" id="f_title" required></div>
+          <div class="fg"><label>Title accent (gold second part)</label><input type="text" name="title_accent" id="f_title_accent"></div>
+        </div>
+        <div class="fg"><label>Subtitle</label><textarea name="subtitle" id="f_subtitle" rows="3"></textarea></div>
+        <div class="fr">
+          <div class="fg"><label>Primary CTA text</label><input type="text" name="cta_text" id="f_cta_text"></div>
+          <div class="fg"><label>Primary CTA link</label><input type="text" name="cta_link" id="f_cta_link" placeholder="/membership"></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>Secondary CTA text</label><input type="text" name="cta_secondary_text" id="f_cta2_text"></div>
+          <div class="fg"><label>Secondary CTA link</label><input type="text" name="cta_secondary_link" id="f_cta2_link"></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label>Sort order</label><input type="number" name="sort_order" id="f_sort_order" value="1"></div>
+          <div class="fg" style="display:flex;align-items:flex-end"><label class="chk-row"><input type="checkbox" name="active" id="f_active" value="1" checked> Active (show on site)</label></div>
+        </div>
+        <div class="fg"><label>Background Image</label><input type="file" name="image" accept="image/*"><input type="hidden" name="existing_image" id="f_existing_image"><div id="f_img_preview" style="margin-top:.5rem"></div></div>
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeItemModal()">Cancel</button>
+        <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save Slide</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openItemModal(it){
+  const m=document.getElementById('itemModal'),f=document.getElementById('itemForm');
+  document.getElementById('modalTitle').textContent=it?'Edit Slide':'New Slide';
+  ['badge','title','title_accent','subtitle','cta_text','cta_link'].forEach(k=>document.getElementById('f_'+k).value=it?(it[k]||''):'');
+  document.getElementById('f_cta2_text').value=it?(it.cta_secondary_text||''):'';
+  document.getElementById('f_cta2_link').value=it?(it.cta_secondary_link||''):'';
+  document.getElementById('f_sort_order').value=it?it.sort_order:1;
+  document.getElementById('f_active').checked=it?!!it.active:true;
+  document.getElementById('f_existing_image').value=it?(it.image_url||''):'';
+  const ip=document.getElementById('f_img_preview');
+  ip.innerHTML=it&&it.image_url?`<img src="${it.image_url}" style="max-height:120px;border-radius:8px;border:1px solid var(--border)">`:'';
+  f.action=it?'/sacxc-cms/slides/'+it.id:'/sacxc-cms/slides';
+  m.classList.add('open');
+}
+function closeItemModal(){document.getElementById('itemModal').classList.remove('open')}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeItemModal()});
+</script>

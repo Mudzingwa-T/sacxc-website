@@ -1,0 +1,23 @@
+<%- include('../partials/header', { pageTitle: 'ACXCO & Continental Affiliation', pageDesc: "SACXC is an affiliate of ACXCO, connecting Southern Africa\u2019s CX community to the continental standards, accreditation and advocacy agenda." }) %>
+<section class="page-hero" style="background-image:url('/images/page/continental.jpg')"><div class="container"><span class="tag tag-light">Continental Affiliation</span><h1>A Regional Voice, A Continental Connection</h1><p><%= (content && content['acxco.intro']) || data.acxco.intro %></p></div></section>
+
+<section class="section"><div class="container">
+  <div class="section-head"><span class="tag">How the affiliation works</span><h2>From national bodies, through SACXC, to the continent</h2></div>
+  <div style="display:flex;align-items:stretch;justify-content:center;gap:1rem;flex-wrap:wrap;margin-top:1rem">
+    <div style="flex:1;min-width:210px;background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--r);padding:1.6rem;text-align:center"><strong style="font-family:var(--font);font-size:1.25rem;color:var(--navy);display:block">16 SADC States</strong><small style="color:var(--muted)">National associations &amp; institutes</small></div>
+    <div style="display:flex;align-items:center;color:var(--red);font-size:1.5rem"><i class="fas fa-arrow-right"></i></div>
+    <div style="flex:1;min-width:210px;background:var(--red);color:#fff;border-radius:var(--r);padding:1.6rem;text-align:center"><strong style="font-family:var(--font);font-size:1.25rem;display:block">SACXC</strong><small style="opacity:.9">Regional coordination &amp; standards</small></div>
+    <div style="display:flex;align-items:center;color:var(--red);font-size:1.5rem"><i class="fas fa-arrow-right"></i></div>
+    <div style="flex:1;min-width:210px;background:var(--navy);color:#fff;border-radius:var(--r);padding:1.6rem;text-align:center"><strong style="font-family:var(--font);font-size:1.25rem;display:block">ACXCO</strong><small style="opacity:.85">Continental standards agenda</small></div>
+  </div>
+</div></section>
+
+<section class="section section-gray"><div class="container" style="max-width:860px">
+  <div class="section-head"><span class="tag">What this means</span><h2>Connected to the continent, independent at home</h2></div>
+  <p class="lead-text"><%= data.acxco.means %></p>
+  <div class="steps-grid" style="margin-top:1.5rem">
+    <% data.acxco.points.forEach(function(p,i){ %><div class="step-card"><div class="step-num"><%= i+1 %></div><p style="margin:0"><%= p %></p></div><% }) %>
+  </div>
+  <div class="text-center mt-3"><a href="<%= data.acxco.link %>" target="_blank" rel="noopener" class="btn btn-red">Learn About ACXCO <i class="fas fa-arrow-right"></i></a></div>
+</div></section>
+<%- include('../partials/footer') %>

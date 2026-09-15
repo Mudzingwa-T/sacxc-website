@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SACXC CMS — Sign In</title>
+<link rel="icon" type="image/png" href="/images/sacxc-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--navy:#000056;--navy-dark:#00003a;--navy-light:#14237a;--green-50:#eef0fb;--accent:#e30000;--dark:#070b2e;--text:#1F2937;--muted:#6B7280;--border:#E5E7EB;--bg:#F9FAFB;--white:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Source Sans 3',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);padding:20px;color:var(--text)}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(227,0,0,.15) 0%,transparent 40%),radial-gradient(circle at 80% 70%,rgba(255,255,255,.08) 0%,transparent 40%);pointer-events:none}
+.login-card{background:var(--white);border-radius:20px;padding:2.5rem 2.2rem;max-width:420px;width:100%;box-shadow:0 25px 70px rgba(0,0,0,.25);position:relative;z-index:1}
+.lb-top{text-align:center;margin-bottom:1.4rem}
+.lb-top img{height:70px;margin-bottom:.9rem;border-radius:50%;box-shadow:0 4px 15px rgba(0,0,86,.2)}
+.lb-top h1{font-family:'Montserrat',sans-serif;font-size:1.35rem;font-weight:800;color:var(--dark);letter-spacing:-0.5px}
+.lb-top p{font-size:.85rem;color:var(--muted);margin-top:.25rem}
+.alert{padding:.7rem .9rem;border-radius:10px;font-size:.82rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.alert.err{background:#FEE2E2;color:#991B1B;border:1px solid #FECACA}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:.35rem}
+.fg label i{color:var(--navy);margin-right:.3rem;font-size:.8rem}
+.fg input{width:100%;padding:.7rem .9rem;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.92rem;transition:.2s;background:var(--bg)}
+.fg input:focus{outline:none;border-color:var(--navy);background:#fff;box-shadow:0 0 0 3px rgba(0,0,86,.1)}
+.lb-btn{width:100%;padding:.85rem;border:none;border-radius:10px;background:var(--navy);color:#fff;font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:.6rem;letter-spacing:.3px}
+.lb-btn:hover{background:var(--navy-dark);transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,86,.25)}
+.lb-bot{text-align:center;margin-top:1.4rem;font-size:.8rem;color:var(--muted)}
+.lb-bot a{color:var(--navy);font-weight:600;text-decoration:none}
+.lb-bot a:hover{color:var(--accent)}
+.lb-badge{position:absolute;top:-12px;right:20px;background:var(--accent);color:var(--dark);padding:.2rem .7rem;font-size:.65rem;font-weight:700;border-radius:20px;letter-spacing:1px;text-transform:uppercase;box-shadow:0 4px 12px rgba(227,0,0,.3)}
+</style>
+</head>
+<body>
+<div class="login-card">
+<span class="lb-badge">CMS v2</span>
+<div class="lb-top">
+<img src="/images/sacxc-logo.png" alt="SACXC">
+<h1>SACXC CMS</h1>
+<p>Admin Control Panel — Sign in to continue</p>
+</div>
+<% if (typeof error !== 'undefined' && error) { %>
+<div class="alert err"><i class="fas fa-triangle-exclamation"></i><%= error %></div>
+<% } %>
+<form method="POST" action="/sacxc-cms/login" autocomplete="off">
+<div class="fg">
+<label><i class="fas fa-user"></i>Username</label>
+<input type="text" name="email" required autofocus placeholder="admin">
+</div>
+<div class="fg">
+<label><i class="fas fa-lock"></i>Password</label>
+<input type="password" name="password" required placeholder="••••••••••">
+</div>
+<button type="submit" class="lb-btn"><i class="fas fa-right-to-bracket"></i> Sign In to Dashboard</button>
+</form>
+<div class="lb-bot">
+<a href="/"><i class="fas fa-arrow-left"></i> Back to Website</a>
+</div>
+</div>
+</body>
+</html>

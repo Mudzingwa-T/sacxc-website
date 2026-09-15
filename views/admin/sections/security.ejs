@@ -1,0 +1,38 @@
+<div class="pnl">
+  <div class="pnl-h"><h3><i class="fas fa-shield-halved"></i> Security Console</h3><span class="badge <%= https ? 'on':'off' %>"><%= https ? 'HTTPS' : 'HTTP (dev)' %></span></div>
+  <div class="pnl-b">
+    <p style="color:var(--muted);margin:-4px 0 16px;font-size:.9rem">Live status of the protections guarding this site — the same kind of monitoring Hostinger surfaces for your domain. Green means active.</p>
+    <div class="tbl-wrap"><table class="tbl"><tbody>
+      <% checks.forEach(function(c){ %>
+        <tr>
+          <td style="width:40px"><span class="badge <%= c[1]?'on':'off' %>"><%= c[1]?'✓':'!' %></span></td>
+          <td><strong><%= c[0] %></strong><br><span style="color:var(--muted);font-size:.85rem"><%= c[2] %></span></td>
+        </tr>
+      <% }) %>
+    </tbody></table></div>
+  </div>
+</div>
+
+<div class="pnl">
+  <div class="pnl-h"><h3><i class="fas fa-user-clock"></i> Recent account activity</h3><span class="badge on"><%= staff %> staff</span></div>
+  <div class="pnl-b">
+    <% if(!recent || recent.length===0){ %>
+      <div class="empty"><i class="fas fa-clipboard-list"></i><p>No sign-in activity recorded yet</p></div>
+    <% } else { %>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>When</th><th>Actor</th><th>Action</th><th>Detail</th><th>IP</th></tr></thead>
+        <tbody>
+          <% recent.forEach(function(r){ %>
+            <tr>
+              <td style="white-space:nowrap;color:var(--muted)"><%= new Date(r.created_at).toLocaleString() %></td>
+              <td><%= r.user_name || '—' %></td>
+              <td><span class="badge <%= (r.action==='login_failed')?'off':'on' %>"><%= (r.action||'').replace('_',' ') %></span></td>
+              <td style="color:var(--muted)"><%= r.details || '' %></td>
+              <td style="color:var(--muted)"><%= r.ip || '' %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+  </div>
+</div>

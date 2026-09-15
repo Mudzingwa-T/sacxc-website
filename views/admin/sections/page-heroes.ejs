@@ -1,0 +1,51 @@
+<!-- PAGE HEROES -->
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-panorama"></i> Page Hero Banners</h3>
+    <small style="color:var(--muted);font-size:.78rem">Controls the big banner at the top of each subpage</small>
+  </div>
+  <div class="pnl-b">
+    <% items.forEach(h=>{ %>
+      <div class="ic">
+        <% if(h.image_url){ %><img src="<%= h.image_url %>" alt=""><% } %>
+        <div class="ic-info">
+          <div class="ic-title"><%= h.title %> <code style="font-size:.72rem"><%= h.page_slug %></code></div>
+          <div class="ic-sub"><%= (h.subtitle||'').substring(0,100) %></div>
+        </div>
+        <button class="be fbtn sm" onclick='openItemModal(<%- JSON.stringify(h).replace(/</g,"\\u003c") %>)'><i class="fas fa-edit"></i> Edit</button>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<div class="modal-back" id="itemModal">
+  <div class="modal">
+    <div class="modal-h"><h3>Edit Page Hero</h3><button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button></div>
+    <form id="itemForm" method="POST" enctype="multipart/form-data">
+      <div class="modal-b">
+        <div class="fg"><label>Page</label><input type="text" id="f_slug" disabled></div>
+        <div class="fg"><label>Title *</label><input type="text" name="title" id="f_title" required></div>
+        <div class="fg"><label>Subtitle</label><textarea name="subtitle" id="f_subtitle" rows="2"></textarea></div>
+        <div class="fg"><label>Background Image</label><input type="file" name="image" accept="image/*"><input type="hidden" name="existing_image" id="f_existing_image"><div id="f_img_preview" style="margin-top:.5rem"></div></div>
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeItemModal()">Cancel</button>
+        <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openItemModal(it){
+  document.getElementById('f_slug').value=it.page_slug;
+  document.getElementById('f_title').value=it.title||'';
+  document.getElementById('f_subtitle').value=it.subtitle||'';
+  document.getElementById('f_existing_image').value=it.image_url||'';
+  document.getElementById('f_img_preview').innerHTML=it.image_url?`<img src="${it.image_url}" style="max-height:100px;border-radius:8px">`:'';
+  document.getElementById('itemForm').action='/sacxc-cms/page-heroes/'+it.id;
+  document.getElementById('itemModal').classList.add('open');
+}
+function closeItemModal(){document.getElementById('itemModal').classList.remove('open')}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeItemModal()});
+</script>

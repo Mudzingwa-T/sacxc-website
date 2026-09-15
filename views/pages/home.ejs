@@ -1,0 +1,68 @@
+<%- include('../partials/header', { pageTitle: 'Home', preloadImage: (data.slides[0] && data.slides[0].image) || '/images/hero-1.jpg' }) %>
+
+<section class="hero" id="hero">
+  <div class="hero-grain"></div>
+  <div class="hero-slider" id="heroSlider">
+    <% data.slides.forEach(function(s,i){ %>
+    <div class="hero-slide <%= i===0?'active':'' %>" data-idx="<%= i %>" style="background-image:url('<%= s.image %>');">
+      <div class="hero-slide-overlay"></div>
+      <div class="container hero-content">
+        <span class="hero-badge"><span class="hero-badge-dot"></span> <%= s.badge %></span>
+        <h1 class="hero-title"><%= s.title %> <% if(s.accent){ %><span class="text-grad"><%= s.accent %></span><% } %></h1>
+        <p class="hero-sub"><%= s.subtitle %></p>
+        <div class="hero-cta">
+          <% if(s.cta1){ %><a href="<%= s.cta1link %>" class="btn btn-red btn-lg"><%= s.cta1 %> <i class="fas fa-arrow-right"></i></a><% } %>
+          <% if(s.cta2){ %><a href="<%= s.cta2link %>" class="btn btn-outline-white btn-lg"><%= s.cta2 %></a><% } %>
+        </div>
+        <div class="hero-meta">
+          <div class="hm-item"><i class="fas fa-circle-check"></i> 16 SADC Member States</div>
+          <div class="hm-item"><i class="fas fa-circle-check"></i> ACXCO affiliate</div>
+          <div class="hm-item"><i class="fas fa-circle-check"></i> Member-governed</div>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+  <button class="hero-arrow hero-arrow-prev" id="heroPrev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+  <button class="hero-arrow hero-arrow-next" id="heroNext" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+  <div class="hero-dots" id="heroDots"><% data.slides.forEach(function(s,i){ %><button class="hero-dot <%= i===0?'active':'' %>" data-go="<%= i %>" aria-label="Slide <%= i+1 %>"></button><% }) %></div>
+</section>
+
+<section class="stats-bar"><div class="container stats-grid">
+  <% data.stats.forEach(function(s){ %><div class="stat-item"><div class="stat-num" data-count="<%= s.n %>"><%= s.n %></div><div class="stat-label"><%= s.label %></div></div><% }) %>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="section-head"><span class="tag">About the Council</span><h2><%= (content && content['home.intro_heading']) || "A single regional council for Southern Africa's CX community" %></h2></div>
+  <div class="about-grid">
+    <div>
+      <p class="lead-text"><%= (content && content['home.intro_body']) || data.site.description %></p>
+      <a href="/about" class="btn btn-red">Read Our Mandate <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="about-right">
+      <div class="about-card"><div class="ac-icon"><i class="fas fa-bullseye"></i></div><h4>Our Mission</h4><p><%= data.site.mission %></p></div>
+      <div class="about-card"><div class="ac-icon"><i class="fas fa-eye"></i></div><h4>Our Vision</h4><p><%= data.site.vision %></p></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="section section-gray"><div class="container">
+  <div class="section-head"><span class="tag">Why SACXC</span><h2><%= (content && content['home.why_heading']) || "What membership changes for your organization" %></h2></div>
+  <div class="services-grid">
+    <% data.services.slice(0,6).forEach(function(s){ %>
+    <div class="svc-card"><div class="svc-icon"><i class="fas fa-<%= s.icon %>"></i></div><h3><%= s.title %></h3><p><%= s.description %></p><a href="/services" class="svc-link">Learn more <i class="fas fa-arrow-right"></i></a></div>
+    <% }) %>
+  </div>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="two-grid" style="align-items:center;gap:3rem">
+    <div><span class="tag">What We Do</span><h2 style="font-family:var(--font);color:var(--navy);font-size:2rem;margin:.5rem 0 1rem">Coordinate, accredit, research, represent</h2><p class="lead-text">Regionally — so members don't stand alone.</p></div>
+    <div><ul style="list-style:none;padding:0;margin:0">
+      <% data.whatWeDo.forEach(function(w){ %><li style="display:flex;gap:.75rem;padding:.55rem 0;border-bottom:1px solid var(--border)"><i class="fas fa-circle-check" style="color:var(--red);margin-top:.25rem"></i><span><%= w %></span></li><% }) %>
+    </ul></div>
+  </div>
+</div></section>
+
+<% var showCta = true; %>
+<%- include('../partials/footer') %>

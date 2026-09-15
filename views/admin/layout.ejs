@@ -1,0 +1,425 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SACXC CMS — <%= title || 'Dashboard' %></title>
+<link rel="icon" type="image/png" href="/images/sacxc-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<style>
+:root{
+  --navy:#000056;--navy-dark:#00003a;--navy-light:#14237a;--green-50:#eef0fb;--green-100:#D6EADD;
+  --accent:#e30000;--accent-light:#e8b24a;--accent-50:#FDF5E6;
+  --dark:#111827;--dark-800:#1F2937;--text:#1F2937;--muted:#6B7280;--border:#E5E7EB;
+  --bg:#F9FAFB;--white:#fff;--success:#059669;--blue:#2563EB;--amber:#F59E0B;--red:#DC2626;
+  --r:12px;--font:'Montserrat',sans-serif;--font2:'Source Sans 3',sans-serif;--sw:260px
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:var(--font2);background:var(--bg);color:var(--text);display:flex;min-height:100vh;font-size:14px}
+
+/* Sidebar */
+.sidebar{width:var(--sw);background:var(--dark);color:#fff;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;display:flex;flex-direction:column;transition:.3s}
+.sidebar::-webkit-scrollbar{width:4px}.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.sb-logo{padding:1.1rem 1.2rem;display:flex;align-items:center;gap:.7rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-logo img{height:38px;width:38px;border-radius:50%;object-fit:cover;border:2px solid var(--accent)}
+.sb-logo h3{font-family:var(--font);font-weight:800;font-size:1rem;line-height:1.1}
+.sb-logo small{display:block;font-size:.62rem;color:rgba(255,255,255,.4);letter-spacing:.6px;margin-top:2px;text-transform:uppercase}
+.sb-sec{padding:.3rem 1.2rem;font-size:.6rem;font-weight:700;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:1.5px;margin-top:1rem;margin-bottom:.15rem}
+.sb-link{display:flex;align-items:center;gap:.7rem;padding:.55rem 1.2rem;color:rgba(255,255,255,.55);font-size:.84rem;text-decoration:none;transition:.15s;border-left:3px solid transparent;font-weight:500;position:relative}
+.sb-link:hover{background:rgba(255,255,255,.04);color:#fff}
+.sb-link.active{background:rgba(0,0,86,.18);color:var(--accent);border-left-color:var(--accent);font-weight:600}
+.sb-link i{width:18px;text-align:center;font-size:.82rem}
+.sb-link .bg{position:absolute;right:1rem;background:var(--accent);color:var(--dark);font-size:.62rem;padding:.1rem .4rem;border-radius:10px;font-weight:700;min-width:18px;text-align:center}
+.sb-user{padding:.85rem 1.2rem;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:.7rem;margin-top:auto}
+.sb-av{width:36px;height:36px;background:linear-gradient(135deg,var(--navy),var(--navy-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:#fff}
+.sb-user-info{flex:1;min-width:0;overflow:hidden}
+.sb-user-info span{font-size:.83rem;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-user-info small{font-size:.66rem;color:rgba(255,255,255,.4);display:block;text-transform:uppercase;letter-spacing:.5px}
+.sb-logout{color:rgba(255,255,255,.5);width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:.15s;font-size:.82rem}
+.sb-logout:hover{background:rgba(220,38,38,.15);color:#F87171}
+
+/* Main */
+.main{margin-left:var(--sw);flex:1;min-width:0}
+.tb{background:var(--white);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;gap:1rem}
+.tb-left{display:flex;align-items:center;gap:.8rem}
+.tb-menu{display:none;width:34px;height:34px;border-radius:8px;border:none;background:var(--bg);color:var(--text);font-size:1rem;cursor:pointer}
+.tb h1{font-family:var(--font);font-size:1.15rem;font-weight:800;color:var(--dark)}
+.tb-act{display:flex;gap:.5rem;align-items:center}
+.tb-act a,.tb-act button{color:var(--muted);text-decoration:none;font-size:.82rem;padding:.4rem .8rem;border-radius:8px;transition:.15s;font-weight:600;border:none;background:transparent;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:.35rem}
+.tb-act a:hover,.tb-act button:hover{background:var(--green-50);color:var(--navy)}
+.ct{padding:1.5rem}
+
+/* Cards */
+.dash-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem}
+.dc{background:var(--white);border-radius:var(--r);padding:1.15rem;border:1px solid var(--border);transition:.2s;position:relative;overflow:hidden}
+.dc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--navy);opacity:0}
+.dc:hover{box-shadow:0 6px 20px rgba(0,0,0,.06);transform:translateY(-2px)}
+.dc:hover::before{opacity:1}
+.dc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.dc-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.05rem}
+.dc-icon.g{background:var(--green-50);color:var(--navy)}
+.dc-icon.b{background:#DBEAFE;color:var(--blue)}
+.dc-icon.y{background:var(--accent-50);color:var(--accent)}
+.dc-icon.s{background:#D1FAE5;color:var(--success)}
+.dc-icon.r{background:#FEE2E2;color:var(--red)}
+.dc-icon.p{background:#EDE9FE;color:#7C3AED}
+.dc-lbl{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.dc-val{font-family:var(--font);font-size:1.9rem;font-weight:800;color:var(--dark);line-height:1.1}
+.dc-sub{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:.15rem}
+.dc-sub.up{color:var(--success)}
+
+/* Panels */
+.pnl{background:var(--white);border-radius:var(--r);border:1px solid var(--border);margin-bottom:1.2rem;overflow:hidden}
+.pnl-h{padding:.85rem 1.2rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap}
+.pnl-h h3{font-family:var(--font);font-size:.95rem;font-weight:700;color:var(--dark);display:flex;align-items:center;gap:.5rem}
+.pnl-h h3 i{color:var(--navy)}
+.pnl-b{padding:1.2rem}
+.cht{height:280px;position:relative}
+
+/* Forms */
+.fg{margin-bottom:.9rem}
+.fg label{display:block;font-size:.78rem;font-weight:600;margin-bottom:.3rem;color:var(--text)}
+.fg input,.fg textarea,.fg select{width:100%;padding:.58rem .85rem;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font2);font-size:.88rem;transition:.15s;background:var(--white);color:var(--text)}
+.fg input:focus,.fg textarea:focus,.fg select:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(0,0,86,.08)}
+.fg textarea{resize:vertical;min-height:90px;font-family:inherit}
+.fg small{color:var(--muted);font-size:.72rem;margin-top:.2rem;display:block}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.8rem}
+
+/* Buttons */
+.fbtn{padding:.55rem 1.15rem;border:none;border-radius:8px;font-family:var(--font2);font-size:.84rem;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:.45rem;letter-spacing:.2px}
+.fbtn.g{background:var(--navy);color:#fff}.fbtn.g:hover{background:var(--navy-dark);box-shadow:0 4px 12px rgba(0,0,86,.25)}
+.fbtn.gd{background:var(--green-50);color:var(--navy)}.fbtn.gd:hover{background:var(--green-100)}
+.fbtn.y{background:var(--accent);color:#fff}.fbtn.y:hover{background:#b87b14}
+.fbtn.r{background:var(--red);color:#fff}.fbtn.r:hover{background:#B91C1C}
+.fbtn.rd{background:#FEE2E2;color:var(--red)}.fbtn.rd:hover{background:#FECACA}
+.fbtn.o{background:transparent;border:1.5px solid var(--border);color:var(--text)}.fbtn.o:hover{border-color:var(--navy);color:var(--navy)}
+.fbtn.sm{padding:.32rem .7rem;font-size:.76rem}
+.factions{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:.84rem}
+.tbl th{background:var(--green-50);padding:.6rem .8rem;text-align:left;font-weight:700;font-size:.7rem;color:var(--navy-dark);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.tbl td{padding:.65rem .8rem;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:hover{background:var(--green-50)}
+.tbl code{background:var(--bg);padding:.1rem .4rem;border-radius:4px;font-size:.75rem;font-family:'JetBrains Mono',monospace}
+
+/* Badges */
+.badge{display:inline-block;padding:.18rem .55rem;border-radius:20px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.badge.on{background:#D1FAE5;color:var(--success)}
+.badge.off{background:#FEE2E2;color:var(--red)}
+.badge.pending{background:#FEF3C7;color:#92400E}
+.badge.draft{background:#E5E7EB;color:var(--muted)}
+.badge.featured{background:var(--accent-50);color:#92400E}
+.badge.superadmin{background:var(--navy-dark);color:#fff}
+.badge.admin{background:var(--navy);color:#fff}
+.badge.editor{background:var(--blue);color:#fff}
+.badge.viewer{background:var(--muted);color:#fff}
+
+/* Toast */
+.toast{position:fixed;top:1rem;right:1rem;background:var(--success);color:#fff;padding:.75rem 1.4rem;border-radius:var(--r);font-size:.85rem;font-weight:600;z-index:9999;display:none;animation:sIn .3s;box-shadow:0 8px 25px rgba(5,150,105,.25)}
+.toast.err{background:var(--red);box-shadow:0 8px 25px rgba(220,38,38,.25)}
+@keyframes sIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* Empty */
+.empty{text-align:center;padding:2.8rem 1rem;color:var(--muted)}
+.empty i{font-size:2.2rem;display:block;margin-bottom:.7rem;opacity:.2}
+.empty p{font-size:.88rem}
+
+/* Item cards (inline editable list) */
+.ic{display:flex;align-items:center;gap:.9rem;padding:.75rem .95rem;background:var(--bg);border-radius:10px;border:1px solid var(--border);margin-bottom:.5rem;transition:.15s}
+.ic:hover{border-color:var(--navy);background:var(--green-50)}
+.ic img{width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0;background:#fff}
+.ic-info{flex:1;min-width:0}
+.ic-title{font-weight:700;font-size:.88rem;color:var(--dark);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ic-sub{font-size:.75rem;color:var(--muted);margin-top:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ic-acts{display:flex;gap:.3rem;flex-shrink:0}
+.ic-acts button,.ic-acts a{padding:.35rem .6rem;border:none;border-radius:7px;font-size:.72rem;cursor:pointer;transition:.15s;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:.25rem;font-family:inherit}
+.be{background:#DBEAFE;color:var(--blue)}.be:hover{background:#BFDBFE}
+.bd{background:#FEE2E2;color:var(--red)}.bd:hover{background:#FECACA}
+.bv{background:var(--accent-50);color:var(--accent)}.bv:hover{background:#FCE7B3}
+
+/* Editor modal — header and footer (with Save button) ALWAYS visible,
+   body scrolls internally. The modal is constrained to 92vh and centred
+   on screen, so the sticky footer is always above the fold. */
+.modal-back{
+  position:fixed;
+  inset:0;
+  background:rgba(17,24,39,.65);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:500;
+  padding:1.5rem 1rem;
+  backdrop-filter:blur(3px);
+}
+.modal-back.open{display:flex}
+.modal{
+  background:var(--white);
+  border-radius:16px;
+  max-width:680px;
+  width:100%;
+  max-height:92vh;
+  height:auto;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 25px 70px rgba(0,0,0,.35);
+}
+.modal-h{
+  padding:1rem 1.3rem;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-shrink:0;                      /* header never shrinks */
+  background:var(--white);
+  z-index:2;
+}
+.modal-h h3{font-family:var(--font);font-size:1.05rem;font-weight:800;color:var(--dark)}
+.modal-x{background:transparent;border:none;font-size:1.3rem;color:var(--muted);cursor:pointer;width:32px;height:32px;border-radius:8px;transition:.15s}
+.modal-x:hover{background:var(--bg);color:var(--red)}
+
+/* When a <form> wraps modal-b + modal-f, the form must also behave as
+   a column flex so the body can scroll and footer sticks. */
+.modal > form{
+  display:flex;
+  flex-direction:column;
+  flex:1 1 auto;
+  min-height:0;
+  overflow:hidden;
+}
+.modal-b{
+  padding:1.3rem;
+  overflow-y:auto;
+  flex:1 1 auto;
+  min-height:0;                       /* critical for flexbox scroll child */
+}
+.modal-f{
+  padding:1rem 1.3rem;
+  border-top:1px solid var(--border);
+  display:flex;
+  gap:.6rem;
+  justify-content:flex-end;
+  background:var(--bg);
+  flex-shrink:0;                      /* Save button footer never shrinks —
+                                         always visible at bottom of modal */
+  z-index:2;
+  box-shadow:0 -4px 14px rgba(0,0,0,.04);
+}
+
+/* Grid image */
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.9rem}
+.gal-card{background:var(--bg);border-radius:10px;overflow:hidden;border:1px solid var(--border);position:relative;transition:.15s}
+.gal-card:hover{border-color:var(--navy);transform:translateY(-2px)}
+.gal-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.gal-info{padding:.55rem .7rem}
+.gal-info h4{font-size:.78rem;font-weight:700;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gal-info p{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;margin-top:.1rem}
+.gal-del{position:absolute;top:.4rem;right:.4rem;background:var(--red);color:#fff;border:none;width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:.75rem;opacity:0;transition:.15s}
+.gal-card:hover .gal-del{opacity:1}
+
+/* Helpers */
+.flex{display:flex;gap:.5rem;align-items:center}
+.between{justify-content:space-between}
+.wrap{flex-wrap:wrap}
+.mt-1{margin-top:1rem}.mb-1{margin-bottom:1rem}
+.grid-2{display:grid;grid-template-columns:2fr 1fr;gap:1rem}
+.chk-row{display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:600;color:var(--text);cursor:pointer;user-select:none}
+.chk-row input{width:17px;height:17px;accent-color:var(--navy);cursor:pointer}
+.msg-card{border:1px solid var(--border);border-radius:10px;padding:.9rem 1.1rem;margin-bottom:.7rem;background:var(--bg);transition:.15s}
+.msg-card.unread{border-left:4px solid var(--navy);background:var(--green-50)}
+.msg-card h4{font-size:.9rem;font-weight:700;color:var(--dark);margin-bottom:.25rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.msg-card .mmeta{font-size:.72rem;color:var(--muted)}
+.msg-card .mbody{font-size:.85rem;color:var(--text);margin-top:.5rem;line-height:1.5}
+.msg-card .macts{margin-top:.6rem;display:flex;gap:.4rem}
+
+/* Responsive */
+@media(max-width:960px){
+  .sidebar{left:-260px;box-shadow:0 0 40px rgba(0,0,0,.5)}
+  .sidebar.open{left:0}
+  .main{margin-left:0}
+  .tb-menu{display:flex;align-items:center;justify-content:center}
+  .grid-2{grid-template-columns:1fr}
+  .dash-cards{grid-template-columns:1fr 1fr}
+  .fr,.fr3{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .ct{padding:1rem}
+  .dash-cards{grid-template-columns:1fr}
+  .tb h1{font-size:1rem}
+  .tb-act a span,.tb-act button span{display:none}
+}
+
+.live-clock-card{background:linear-gradient(135deg,var(--dark) 0%,var(--dark-800) 100%);color:#fff;border:none}
+.live-clock-card .pnl-b{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding:.9rem 1.2rem}
+.live-dot{width:10px;height:10px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 2s infinite;box-shadow:0 0 10px #22c55e}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.2)}}
+#liveClock{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;color:#fff;letter-spacing:2px}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <img src="/images/sacxc-logo.png" alt="SACXC">
+    <div><h3>SACXC CMS</h3><small>Admin Dashboard</small></div>
+  </div>
+  <nav>
+    <div class="sb-sec">Dashboard</div>
+    <a href="/sacxc-cms" class="sb-link <%= section==='overview'?'active':'' %>"><i class="fas fa-th-large"></i> Overview</a>
+    <a href="/sacxc-cms/analytics" class="sb-link <%= section==='analytics'?'active':'' %>"><i class="fas fa-chart-line"></i> Analytics</a>
+
+    <div class="sb-sec">Website Content</div>
+    <a href="/sacxc-cms/content" class="sb-link <%= section==='content'?'active':'' %>"><i class="fas fa-pen-to-square"></i> Page Content</a>
+    <a href="/sacxc-cms/menu" class="sb-link <%= section==='menu'?'active':'' %>"><i class="fas fa-bars"></i> Navigation Menu</a>
+    <a href="/sacxc-cms/hero" class="sb-link <%= section==='hero'?'active':'' %>"><i class="fas fa-images"></i> Hero Slider</a>
+    <a href="/sacxc-cms/page-heroes" class="sb-link <%= section==='page-heroes'?'active':'' %>"><i class="fas fa-panorama"></i> Page Banners</a>
+
+    <div class="sb-sec">Pages &amp; Data</div>
+    <a href="/sacxc-cms/branches" class="sb-link <%= section==='branches'?'active':'' %>"><i class="fas fa-map-location-dot"></i> Our Members<% if(stats && stats.branches){ %><span class="bg"><%= stats.branches %></span><% } %></a>
+    <a href="/sacxc-cms/benefits" class="sb-link <%= section==='benefits'?'active':'' %>"><i class="fas fa-layer-group"></i> Services (Pillars)</a>
+    <a href="/sacxc-cms/achievements" class="sb-link <%= section==='achievements'?'active':'' %>"><i class="fas fa-bullseye"></i> Objectives</a>
+    <a href="/sacxc-cms/partners" class="sb-link <%= section==='partners'?'active':'' %>"><i class="fas fa-globe-africa"></i> ACXCO &amp; Partners</a>
+
+    <div class="sb-sec">Inbox</div>
+    <a href="/sacxc-cms/applications" class="sb-link <%= section==='applications'?'active':'' %>"><i class="fas fa-file-signature"></i> Membership Enquiries<% if(stats && stats.pendingApplications){ %><span class="bg"><%= stats.pendingApplications %></span><% } %></a>
+    <a href="/sacxc-cms/messages" class="sb-link <%= section==='messages'?'active':'' %>"><i class="fas fa-envelope"></i> Messages<% if(stats && stats.unreadMessages){ %><span class="bg"><%= stats.unreadMessages %></span><% } %></a>
+
+    <div class="sb-sec">System</div>
+    <a href="/sacxc-cms/security" class="sb-link <%= section==='security'?'active':'' %>"><i class="fas fa-shield-halved"></i> Security</a>
+    <a href="/sacxc-cms/audit" class="sb-link <%= section==='audit'?'active':'' %>"><i class="fas fa-clipboard-list"></i> Audit Trail<% if(stats && stats.auditRecent){ %><span class="bg"><%= stats.auditRecent %></span><% } %></a>
+    <a href="/sacxc-cms/site" class="sb-link <%= section==='site'?'active':'' %>"><i class="fas fa-cog"></i> Site Settings</a>
+    <% if (user && user.role === 'superadmin') { %>
+      <a href="/sacxc-cms/users" class="sb-link <%= section==='users'?'active':'' %>"><i class="fas fa-users"></i> Users &amp; Roles</a>
+    <% } %>
+    <a href="/sacxc-cms/password" class="sb-link <%= section==='password'?'active':'' %>"><i class="fas fa-key"></i> My Password</a>
+  </nav>
+  <div class="sb-user">
+    <div class="sb-av"><%= user ? (user.name || 'A').substring(0,1).toUpperCase() : 'A' %></div>
+    <div class="sb-user-info">
+      <span><%= user ? user.name : 'Admin' %></span>
+      <small><%= user ? user.role : '' %></small>
+    </div>
+    <a href="/sacxc-cms/logout" class="sb-logout" title="Sign out"><i class="fas fa-sign-out-alt"></i></a>
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+  <header class="tb">
+    <div class="tb-left">
+      <button class="tb-menu" id="menuBtn" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+      <h1><%= title || 'Dashboard' %></h1>
+    </div>
+    <div class="tb-act">
+      <a href="/" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> <span>View Site</span></a>
+    </div>
+  </header>
+
+  <% if (typeof success !== 'undefined' && success) { %><script>window._flashMsg={type:'ok',msg:<%- JSON.stringify(success) %>}</script><% } %>
+  <% if (typeof error !== 'undefined' && error) { %><script>window._flashMsg={type:'err',msg:<%- JSON.stringify(error) %>}</script><% } %>
+
+  <div class="ct">
+  <%- body %>
+  </div>
+</main>
+
+<script>
+// Mobile menu
+document.getElementById('menuBtn')?.addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
+document.addEventListener('click',e=>{
+  const sb=document.getElementById('sidebar'),btn=document.getElementById('menuBtn');
+  if(window.innerWidth<=960&&sb.classList.contains('open')&&!sb.contains(e.target)&&!btn.contains(e.target))sb.classList.remove('open');
+});
+
+// Toast helper
+function toast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast'+(type==='err'?' err':'');t.style.display='block';
+  setTimeout(()=>t.style.display='none',3500);
+}
+if(window._flashMsg)toast(window._flashMsg.msg,window._flashMsg.type==='err'?'err':'ok');
+
+// Confirm helpers
+function confirmDel(msg){return confirm(msg||'Delete this item? This cannot be undone.')}
+document.addEventListener('submit',function(e){
+  var f=e.target;
+  if(f.matches&&f.matches('[data-confirm]')){ if(!confirm(f.getAttribute('data-confirm')||'Save these changes?')){e.preventDefault();return false;} }
+});
+
+// Submit via fetch and update via toast
+async function ajaxSubmit(form,success){
+  const fd=new FormData(form);
+  try{
+    const r=await fetch(form.action,{method:'POST',body:fd});
+    const j=await r.json().catch(()=>({}));
+    if(j.success===false){toast(j.error||'Error','err');return false}
+    toast(success||'Saved.');
+    return true;
+  }catch(e){toast('Network error','err');return false}
+}
+
+// ============== Rich-text editor auto-init ==============
+// Any <div class="rich-editor" data-name="fieldName">...</div> becomes a Quill editor.
+// On form submit, the HTML contents are written to a hidden input with the same name.
+function initRichEditors(root){
+  root=root||document;
+  root.querySelectorAll('.rich-editor').forEach(el=>{
+    if(el.dataset._init)return;
+    const name=el.getAttribute('data-name');
+    const initial=el.innerHTML;
+    el.innerHTML='';
+    const toolbar=el.getAttribute('data-simple')==='1'?
+      [['bold','italic','underline'],[{list:'ordered'},{list:'bullet'}],['link'],['clean']]:
+      [[{header:[2,3,false]}],['bold','italic','underline'],[{list:'ordered'},{list:'bullet'}],['link'],['clean']];
+    const q=new Quill(el,{theme:'snow',modules:{toolbar},placeholder:el.getAttribute('data-placeholder')||'Type here…'});
+    q.root.innerHTML=initial||'';
+    el.dataset._init='1';
+    const form=el.closest('form');
+    if(form){
+      const hidden=document.createElement('input');
+      hidden.type='hidden';hidden.name=name;
+      form.appendChild(hidden);
+      form.addEventListener('submit',()=>{hidden.value=q.root.innerHTML;});
+    }
+    el._quill=q;
+  });
+}
+document.addEventListener('DOMContentLoaded',()=>initRichEditors());
+// Re-init after modal opens (modals inject content dynamically)
+const _mo=new MutationObserver(()=>initRichEditors());
+_mo.observe(document.body,{childList:true,subtree:true});
+</script>
+<style>
+/* Quill rich-text editor styling. Height is capped so the editor never
+   pushes the Save button off-screen inside a modal. */
+.ql-editor{
+  min-height:140px;
+  max-height:300px;                 /* cap — editor scrolls internally if content is long */
+  overflow-y:auto;
+  font-family:var(--font2);
+  font-size:.92rem;
+  line-height:1.6;
+  color:var(--text);
+}
+.ql-toolbar.ql-snow{
+  border-color:var(--border);
+  border-top-left-radius:8px;
+  border-top-right-radius:8px;
+  background:var(--bg);
+  position:sticky;                  /* toolbar stays visible as the editor scrolls */
+  top:0;
+  z-index:1;
+}
+.ql-container.ql-snow{border-color:var(--border);border-bottom-left-radius:8px;border-bottom-right-radius:8px}
+.ql-snow .ql-picker-label,.ql-snow .ql-picker-item{color:var(--text)}
+.rich-editor{background:#fff;border-radius:8px}
+</style>
+</body></html>

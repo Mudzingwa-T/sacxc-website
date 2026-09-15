@@ -1,0 +1,150 @@
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-map-marker-alt"></i> Branches <span class="badge draft" style="margin-left:.4rem;background:var(--green-50);color:var(--navy)"><%= items.length %> branches</span></h3>
+    <button class="fbtn g" onclick="openItemModal(null)"><i class="fas fa-plus"></i> New Branch</button>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-map"></i><p>No branches yet</p></div>
+    <% } else { %>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Branch</th><th>Region</th><th>Leader</th><th>Contact</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <% items.forEach(b=>{ %>
+            <tr>
+              <td><strong><%= b.name %></strong><div style="font-size:.72rem;color:var(--muted)"><%= b.address||'' %></div></td>
+              <td><%= b.region || '—' %></td>
+              <td><% if(b.leader_image){ %><img src="<%= b.leader_image %>" style="width:28px;height:28px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:.4rem"><% } %><%= b.leader_name||'—' %><div style="font-size:.7rem;color:var(--muted)"><%= b.leader_role||'' %></div></td>
+              <td><div style="font-size:.78rem"><%= b.leader_phone||'' %><br><%= b.leader_email||'' %></div></td>
+              <td><span class="badge <%= b.active?'on':'off' %>"><%= b.active?'Active':'Hidden' %></span></td>
+              <td><div class="ic-acts">
+                <button class="be" onclick='openItemModal(<%- JSON.stringify(b).replace(/</g,"\\u003c") %>)'><i class="fas fa-edit"></i></button>
+                <form method="POST" action="/sacxc-cms/branches/<%= b.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete this branch?')"><button class="bd" type="submit"><i class="fas fa-trash"></i></button></form>
+              </div></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Modal: Edit Branch. Reorganised so contact details (phone, email) are ABOVE the rich-text
+     description — which used to dominate the middle of the form and push phone/email out of
+     sight on smaller viewports. The "About this branch" editor is now at the bottom. -->
+<div class="modal-back" id="itemModal">
+  <div class="modal" style="max-width:760px">
+    <div class="modal-h">
+      <h3 id="modalTitle">New Branch</h3>
+      <button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="itemForm" method="POST" enctype="multipart/form-data">
+      <div class="modal-b">
+
+        <!-- 1. Identity -->
+        <h4 class="br-sec-title">Branch Identity</h4>
+        <div class="fr">
+          <div class="fg"><label>Branch Name *</label><input type="text" name="name" id="f_name" required placeholder="e.g. Harare Central"></div>
+          <div class="fg"><label>Region</label><input type="text" name="region" id="f_region" placeholder="e.g. Harare Metropolitan"></div>
+        </div>
+        <div class="fg"><label>Physical Address</label><input type="text" name="address" id="f_address" placeholder="e.g. Construction House, 3rd Floor, Harare"></div>
+
+        <!-- 2. CONTACT — promoted to appear before the description so it's never hidden -->
+        <h4 class="br-sec-title">Branch Contact (shown as call/email buttons on the public Branches page)</h4>
+        <div class="fr">
+          <div class="fg">
+            <label><i class="fas fa-phone" style="color:var(--navy);margin-right:.3rem"></i> Branch Phone *</label>
+            <input type="text" name="leader_phone" id="f_leader_phone" placeholder="e.g. +263 772 111 001">
+          </div>
+          <div class="fg">
+            <label><i class="fas fa-envelope" style="color:var(--accent,#e30000);margin-right:.3rem"></i> Branch Email *</label>
+            <input type="email" name="leader_email" id="f_leader_email" placeholder="e.g. harare@sacxc.org">
+          </div>
+        </div>
+
+        <!-- 3. Leader details -->
+        <h4 class="br-sec-title">Branch Leader</h4>
+        <div class="fr">
+          <div class="fg"><label>Leader Full Name</label><input type="text" name="leader_name" id="f_leader_name" placeholder="e.g. Tendai Moyo"></div>
+          <div class="fg"><label>Leader Role</label><input type="text" name="leader_role" id="f_leader_role" placeholder="e.g. Branch Chairperson" value="Branch Chairperson"></div>
+        </div>
+        <div class="fg">
+          <label>Leader Photo (optional)</label>
+          <input type="file" name="leader_image_file" accept="image/*">
+          <input type="hidden" name="existing_leader_image" id="f_existing_leader_image">
+          <div id="f_img_preview" style="margin-top:.5rem"></div>
+        </div>
+
+        <!-- 4. Meta -->
+        <h4 class="br-sec-title">Display Options</h4>
+        <div class="fr">
+          <div class="fg"><label>Members in this branch</label><input type="number" name="members_count" id="f_members_count" value="0"></div>
+          <div class="fg"><label>Display order</label><input type="number" name="sort_order" id="f_sort_order" value="1"></div>
+        </div>
+        <label class="chk-row"><input type="checkbox" name="active" id="f_active" value="1" checked> Visible on public Branches page</label>
+
+        <!-- 5. Long description LAST, so it never hides critical fields -->
+        <h4 class="br-sec-title">About this Branch</h4>
+        <div class="fg">
+          <div id="f_description" class="rich-editor" data-name="description" data-simple="1"
+               data-placeholder="Short description of the branch and what it covers."
+               style="max-height:220px;overflow:auto"></div>
+        </div>
+
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeItemModal()">Cancel</button>
+        <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save Branch</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+.br-sec-title {
+  margin:1.1rem 0 .55rem;
+  font-size:.78rem;
+  font-weight:700;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  padding-bottom:.3rem;
+  border-bottom:1px solid var(--border);
+}
+.br-sec-title:first-child { margin-top: 0; }
+#itemModal .ql-editor { min-height: 110px; max-height: 220px; }
+</style>
+
+<script>
+function openItemModal(it){
+  document.getElementById('modalTitle').textContent = it ? 'Edit Branch' : 'New Branch';
+  ['name','region','address','leader_name','leader_role','leader_phone','leader_email']
+    .forEach(k => document.getElementById('f_'+k).value = it ? (it[k] || '') : '');
+  document.getElementById('f_leader_role').value = it ? (it.leader_role || 'Branch Chairperson') : 'Branch Chairperson';
+
+  const ed = document.getElementById('f_description');
+  if (ed._quill) ed._quill.root.innerHTML = it ? (it.description || '') : '';
+  else ed.innerHTML = it ? (it.description || '') : '';
+
+  document.getElementById('f_existing_leader_image').value = it ? (it.leader_image || '') : '';
+  document.getElementById('f_members_count').value = it ? (it.members_count || 0) : 0;
+  document.getElementById('f_sort_order').value = it ? it.sort_order : 1;
+  document.getElementById('f_active').checked = it ? !!it.active : true;
+
+  const ip = document.getElementById('f_img_preview');
+  ip.innerHTML = it && it.leader_image
+    ? `<img src="${it.leader_image}" style="max-height:80px;border-radius:50%;border:2px solid var(--border)">`
+    : '';
+
+  document.getElementById('itemForm').action = it ? '/sacxc-cms/branches/' + it.id : '/sacxc-cms/branches';
+  document.getElementById('itemModal').classList.add('open');
+
+  // Make sure modal starts scrolled at the top so identity fields are visible
+  const body = document.querySelector('#itemModal .modal-b');
+  if (body) body.scrollTop = 0;
+}
+function closeItemModal(){ document.getElementById('itemModal').classList.remove('open'); }
+document.getElementById('itemModal').addEventListener('click', e => {
+  if (e.target.id === 'itemModal') closeItemModal();
+});
+</script>

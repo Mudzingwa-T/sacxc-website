@@ -1,0 +1,59 @@
+<!-- ACHIEVEMENTS -->
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-trophy"></i> Milestones & Achievements</h3>
+    <button class="fbtn g" onclick="openItemModal(null)"><i class="fas fa-plus"></i> New Milestone</button>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-trophy"></i><p>No milestones yet</p></div>
+    <% } else { %>
+      <% items.forEach(a=>{ %>
+        <div class="ic">
+          <div style="width:56px;height:56px;border-radius:10px;background:var(--accent-50);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:800;font-size:1rem;flex-shrink:0"><%= a.year || '—' %></div>
+          <div class="ic-info">
+            <div class="ic-title"><%= a.title %></div>
+            <div class="ic-sub"><% if(a.badge){ %><span style="color:var(--navy);font-weight:600"><%= a.badge %> · </span><% } %><%= (a.description||'').substring(0,100) %></div>
+          </div>
+          <div class="ic-acts">
+            <button class="be" onclick='openItemModal(<%- JSON.stringify(a).replace(/</g,"\\u003c") %>)'><i class="fas fa-edit"></i></button>
+            <form method="POST" action="/sacxc-cms/achievements/<%= a.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete milestone?')"><button class="bd" type="submit"><i class="fas fa-trash"></i></button></form>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</div>
+
+<div class="modal-back" id="itemModal">
+  <div class="modal">
+    <div class="modal-h"><h3 id="modalTitle">New Milestone</h3><button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button></div>
+    <form id="itemForm" method="POST">
+      <div class="modal-b">
+        <div class="fr">
+          <div class="fg"><label>Year *</label><input type="text" name="year" id="f_year" required placeholder="2024"></div>
+          <div class="fg"><label>Badge (label)</label><input type="text" name="badge" id="f_badge" placeholder="Foundation Year"></div>
+        </div>
+        <div class="fg"><label>Title *</label><input type="text" name="title" id="f_title" required></div>
+        <div class="fg"><label>Description</label><textarea name="description" id="f_description" rows="3"></textarea></div>
+        <div class="fg"><label>Sort order</label><input type="number" name="sort_order" id="f_sort_order" value="1"></div>
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeItemModal()">Cancel</button>
+        <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openItemModal(it){
+  document.getElementById('modalTitle').textContent=it?'Edit Milestone':'New Milestone';
+  ['year','badge','title','description'].forEach(k=>document.getElementById('f_'+k).value=it?(it[k]||''):'');
+  document.getElementById('f_sort_order').value=it?it.sort_order:1;
+  document.getElementById('itemForm').action=it?'/sacxc-cms/achievements/'+it.id:'/sacxc-cms/achievements';
+  document.getElementById('itemModal').classList.add('open');
+}
+function closeItemModal(){document.getElementById('itemModal').classList.remove('open')}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeItemModal()});
+</script>

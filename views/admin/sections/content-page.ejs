@@ -1,0 +1,25 @@
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-<%= def.icon %>"></i> <%= def.title %> — Content</h3>
+    <a class="fbtn o" href="/sacxc-cms/content"><i class="fas fa-arrow-left"></i> All pages</a>
+  </div>
+  <div class="pnl-b">
+    <p style="color:var(--muted);margin:-4px 0 18px;font-size:.9rem">Edit the text for the <strong><%= def.title %></strong> page. Changes publish immediately.</p>
+    <form method="POST" action="/sacxc-cms/content/<%= pageKey %>" data-confirm="Save changes to the <%= def.title %> page?">
+      <% def.fields.forEach(function(f){ var name=f.key.replace(/\./g,'__'); var val=values[f.key]||''; %>
+        <div class="fg" style="margin-bottom:16px">
+          <label style="display:block;font-weight:600;color:var(--dark,#0f172a);margin-bottom:6px;font-size:.9rem"><%= f.label %></label>
+          <% if(f.kind==='textarea'){ %>
+            <textarea name="<%= name %>" rows="3" style="width:100%;padding:11px 13px;border:1px solid var(--border,#e2e8f0);border-radius:9px;font-family:inherit;font-size:.92rem;resize:vertical"><%= val %></textarea>
+          <% } else { %>
+            <input type="text" name="<%= name %>" value="<%= val %>" style="width:100%;padding:11px 13px;border:1px solid var(--border,#e2e8f0);border-radius:9px;font-family:inherit;font-size:.92rem">
+          <% } %>
+        </div>
+      <% }) %>
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save <%= def.title %> Content</button>
+        <a class="fbtn o" href="/<%= pageKey==='home'?'':(pageKey==='members'?'our-members':(pageKey==='contact'?'get-involved':pageKey)) %>" target="_blank"><i class="fas fa-external-link-alt"></i> Preview page</a>
+      </div>
+    </form>
+  </div>
+</div>

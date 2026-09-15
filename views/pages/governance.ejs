@@ -1,0 +1,18 @@
+<%- include('../partials/header', { pageTitle: 'Governance', pageDesc: "How SACXC is governed — member-governed, geographically balanced and accountable, one member organization one vote." }) %>
+<section class="page-hero" style="background-image:url('/images/page/rings.jpg')"><div class="container"><span class="tag tag-light">Governance</span><h1>Governance You Can Trust</h1><p>Structured to reflect the diversity of the SADC region — island states, land-locked states, and larger coastal economies alike.</p></div></section>
+
+<section class="section"><div class="container">
+  <div class="section-head"><span class="tag">Guiding Principles</span><h2>How the Council holds itself accountable</h2></div>
+  <div class="four-grid">
+    <% data.governance.principles.forEach(function(p,i){ %><div class="principle"><span class="p-num"><%= String(i+1).padStart(2,'0') %></span><p><%= p %></p></div><% }) %>
+  </div>
+</div></section>
+
+<section class="section section-gray"><div class="container" style="max-width:820px;text-align:center">
+  <div class="section-head"><span class="tag">Governance Model</span><h2>One member organization, one vote</h2></div>
+  <p class="lead-text"><%= (content && content['governance.model']) || data.governance.model %></p>
+</div></section>
+
+<section class="cta-band"><div class="container cta-band-inner"><h2>See the organizations behind the Council</h2><div class="cta-btns"><a href="/our-members" class="btn btn-white">View Our Members</a><a href="/acxco" class="btn btn-outline-white">ACXCO Affiliation</a></div></div></section>
+<% var showCta = false; %>
+<%- include('../partials/footer') %>

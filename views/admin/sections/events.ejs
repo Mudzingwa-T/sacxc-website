@@ -1,0 +1,77 @@
+<!-- EVENTS -->
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-calendar-alt"></i> Events <span class="badge draft" style="margin-left:.4rem;background:var(--green-50);color:var(--navy)"><%= items.length %> total</span></h3>
+    <button class="fbtn g" onclick="openItemModal(null)"><i class="fas fa-plus"></i> New Event</button>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-calendar"></i><p>No events yet</p></div>
+    <% } else { %>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Title</th><th>Date</th><th>Location</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <% items.forEach(ev=>{ %>
+            <tr>
+              <td><strong><%= ev.title %></strong></td>
+              <td><%= ev.event_date %> <%= ev.event_time||'' %></td>
+              <td><%= ev.location || 'TBA' %></td>
+              <td><span class="badge <%= ev.published?'on':'off' %>"><%= ev.published?'Published':'Draft' %></span></td>
+              <td><div class="ic-acts">
+                <button class="be" onclick='openItemModal(<%- JSON.stringify(ev).replace(/</g,"\\u003c") %>)'><i class="fas fa-edit"></i></button>
+                <form method="POST" action="/sacxc-cms/events/<%= ev.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete event?')"><button class="bd" type="submit"><i class="fas fa-trash"></i></button></form>
+              </div></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+  </div>
+</div>
+
+<div class="modal-back" id="itemModal">
+  <div class="modal" style="max-width:720px">
+    <div class="modal-h"><h3 id="modalTitle">New Event</h3><button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button></div>
+    <form id="itemForm" method="POST" enctype="multipart/form-data">
+      <div class="modal-b">
+        <div class="fg"><label>Event Title</label><input type="text" name="title" id="f_title" required></div>
+        <div class="fr">
+          <div class="fg"><label>Date</label><input type="date" name="event_date" id="f_date" required></div>
+          <div class="fg"><label>Time</label><input type="text" name="event_time" id="f_time" placeholder="e.g. 09:00 AM"></div>
+        </div>
+        <div class="fg"><label>Location</label><input type="text" name="location" id="f_location" placeholder="e.g. Harare International Conference Centre"></div>
+        <div class="fg"><label>Short Description</label><textarea name="description" id="f_description" rows="2" placeholder="One sentence shown in event listings"></textarea></div>
+        <div class="fg"><label>Full Details</label><div id="f_content" class="rich-editor" data-name="content" data-placeholder="What's this event about? Agenda, speakers, RSVP info…"></div></div>
+        <div class="fg"><label>Cover Image</label><input type="file" name="image" accept="image/*"><input type="hidden" name="existing_image" id="f_existing_image"><div id="f_img_preview" style="margin-top:.5rem"></div></div>
+        <label class="chk-row"><input type="checkbox" name="published" id="f_published" value="1"> Published (visible to visitors)</label>
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeItemModal()">Cancel</button>
+        <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save Event</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openItemModal(it){
+  const m=document.getElementById('itemModal'),f=document.getElementById('itemForm');
+  document.getElementById('modalTitle').textContent=it?'Edit Event':'New Event';
+  document.getElementById('f_title').value=it?it.title:'';
+  document.getElementById('f_date').value=it?it.event_date:'';
+  document.getElementById('f_time').value=it?(it.event_time||''):'';
+  document.getElementById('f_location').value=it?(it.location||''):'';
+  document.getElementById('f_description').value=it?(it.description||''):'';
+  const ed=document.getElementById('f_content');
+  if(ed._quill) ed._quill.root.innerHTML=it?(it.content||''):'';
+  else ed.innerHTML=it?(it.content||''):'';
+  document.getElementById('f_existing_image').value=it?(it.image_url||''):'';
+  document.getElementById('f_published').checked=it?!!it.published:true;
+  const ip=document.getElementById('f_img_preview');
+  ip.innerHTML=it&&it.image_url?`<img src="${it.image_url}" style="max-height:100px;border-radius:8px;border:1px solid var(--border)">`:'';
+  f.action=it?'/sacxc-cms/events/'+it.id:'/sacxc-cms/events';
+  m.classList.add('open');
+}
+function closeItemModal(){document.getElementById('itemModal').classList.remove('open')}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeItemModal()});
+</script>

@@ -1,0 +1,25 @@
+<div class="pnl">
+  <div class="pnl-h"><h3><i class="fas fa-pen-to-square"></i> Website Content</h3></div>
+  <div class="pnl-b">
+    <p style="color:var(--muted);margin:-4px 0 18px;font-size:.9rem">Each page of the website is edited as its own module below. Open a page to change its text. Banners are managed under <strong>Page Banners</strong>, the menu under <strong>Navigation Menu</strong>.</p>
+    <div class="content-pages-grid">
+      <% Object.keys(pages).forEach(function(k){ var p=pages[k]; %>
+        <a class="content-page-card" href="/sacxc-cms/content/<%= k %>">
+          <div class="cpc-icon"><i class="fas fa-<%= p.icon %>"></i></div>
+          <div class="cpc-body"><strong><%= p.title %></strong><span><%= p.fields.length %> editable field<%= p.fields.length>1?'s':'' %></span></div>
+          <i class="fas fa-chevron-right cpc-arrow"></i>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</div>
+<style>
+.content-pages-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.content-page-card{display:flex;align-items:center;gap:12px;background:var(--panel,#fff);border:1px solid var(--border,#e2e8f0);border-radius:12px;padding:14px 16px;text-decoration:none;color:inherit;transition:.15s}
+.content-page-card:hover{border-color:var(--navy,#000056);box-shadow:0 6px 20px rgba(0,0,86,.1);transform:translateY(-2px)}
+.cpc-icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#000056,#14237a);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex:none}
+.cpc-body{display:flex;flex-direction:column;flex:1}
+.cpc-body strong{color:var(--dark,#0f172a);font-size:.98rem}
+.cpc-body span{color:var(--muted,#64748b);font-size:.78rem}
+.cpc-arrow{color:var(--muted,#94a3b8);font-size:.8rem}
+</style>

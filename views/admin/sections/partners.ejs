@@ -1,0 +1,60 @@
+<!-- PARTNERS -->
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-handshake"></i> Partners & Affiliations</h3>
+    <button class="fbtn g" onclick="openItemModal(null)"><i class="fas fa-plus"></i> New Partner</button>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-handshake"></i><p>No partners yet</p></div>
+    <% } else { %>
+      <% items.forEach(p=>{ %>
+        <div class="ic">
+          <div style="width:48px;height:48px;border-radius:8px;background:var(--green-50);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-family:var(--font)"><%= p.name.charAt(0) %></div>
+          <div class="ic-info">
+            <div class="ic-title"><%= p.name %></div>
+            <div class="ic-sub"><span class="badge draft"><%= p.type %></span> <%= (p.description||'').substring(0,80) %></div>
+          </div>
+          <div class="ic-acts">
+            <button class="be" onclick='openItemModal(<%- JSON.stringify(p).replace(/</g,"\\u003c") %>)'><i class="fas fa-edit"></i></button>
+            <form method="POST" action="/sacxc-cms/partners/<%= p.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete partner?')"><button class="bd" type="submit"><i class="fas fa-trash"></i></button></form>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</div>
+
+<div class="modal-back" id="itemModal">
+  <div class="modal">
+    <div class="modal-h"><h3 id="modalTitle">New Partner</h3><button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button></div>
+    <form id="itemForm" method="POST">
+      <div class="modal-b">
+        <div class="fr">
+          <div class="fg"><label>Name *</label><input type="text" name="name" id="f_name" required></div>
+          <div class="fg"><label>Type</label><select name="type" id="f_type"><option>National</option><option>International</option><option>Government</option><option>NGO</option></select></div>
+        </div>
+        <div class="fg"><label>Description</label><textarea name="description" id="f_description" rows="3"></textarea></div>
+        <div class="fg"><label>Highlights (separate with |)</label><textarea name="highlights" id="f_highlights" rows="2" placeholder="Trade Union training|Leadership development|Capacity building"></textarea></div>
+        <div class="fg"><label>Sort order</label><input type="number" name="sort_order" id="f_sort_order" value="1"></div>
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeItemModal()">Cancel</button>
+        <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openItemModal(it){
+  document.getElementById('modalTitle').textContent=it?'Edit Partner':'New Partner';
+  ['name','description','highlights'].forEach(k=>document.getElementById('f_'+k).value=it?(it[k]||''):'');
+  document.getElementById('f_type').value=it?(it.type||'National'):'National';
+  document.getElementById('f_sort_order').value=it?it.sort_order:1;
+  document.getElementById('itemForm').action=it?'/sacxc-cms/partners/'+it.id:'/sacxc-cms/partners';
+  document.getElementById('itemModal').classList.add('open');
+}
+function closeItemModal(){document.getElementById('itemModal').classList.remove('open')}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeItemModal()});
+</script>

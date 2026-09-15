@@ -1,0 +1,57 @@
+<!-- MEMBERSHIP APPLICATIONS -->
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-file-signature"></i> Membership Applications <span class="badge draft" style="margin-left:.4rem;background:var(--green-50);color:var(--navy)"><%= items.length %> total</span></h3>
+    <small style="color:var(--muted);font-size:.78rem">Digitally signed applications from the online form</small>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-file-signature"></i><p>No applications yet</p></div>
+    <% } else { %>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Applicant</th><th>Employer</th><th>Branch</th><th>Status</th><th>Date</th><th></th></tr></thead>
+        <tbody>
+          <% items.forEach(a=>{ %>
+            <tr>
+              <td><strong><%= a.full_name %></strong><div class="mmeta" style="font-size:.72rem;color:var(--muted)"><%= a.email %> · <%= a.phone %></div></td>
+              <td><%= a.employer %><% if(a.patterson_grade){ %><div class="mmeta" style="font-size:.72rem;color:var(--muted)">Grade <%= a.patterson_grade %></div><% } %></td>
+              <td><%= a.branch || '—' %></td>
+              <td><span class="badge <%= a.status==='approved'?'on':(a.status==='rejected'?'off':'pending') %>"><%= a.status %></span></td>
+              <td><%= new Date(a.created_at).toLocaleDateString() %></td>
+              <td><div class="ic-acts">
+                <button class="be" onclick='viewApp(<%- JSON.stringify(a).replace(/</g,"\\u003c") %>)'><i class="fas fa-eye"></i></button>
+                <% if(a.status!=='approved'){ %><form method="POST" action="/sacxc-cms/applications/<%= a.id %>/approve" style="display:inline"><button class="bv" type="submit" title="Approve + increment member count"><i class="fas fa-check"></i></button></form><% } %>
+                <form method="POST" action="/sacxc-cms/applications/<%= a.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete application?')"><button class="bd" type="submit"><i class="fas fa-trash"></i></button></form>
+              </div></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+  </div>
+</div>
+
+<div class="modal-back" id="itemModal">
+  <div class="modal">
+    <div class="modal-h"><h3 id="modalTitle">Application</h3><button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button></div>
+    <div class="modal-b" id="modalBody"></div>
+    <div class="modal-f"><button type="button" class="fbtn o" onclick="closeItemModal()">Close</button></div>
+  </div>
+</div>
+
+<script>
+function viewApp(a){
+  document.getElementById('modalTitle').textContent=a.full_name;
+  const sig=a.signature?`<div style="margin-top:.7rem"><label style="font-size:.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Signature</label><div style="border:1px solid var(--border);border-radius:8px;background:#fafbfa;padding:8px;margin-top:.3rem"><img src="${a.signature}" style="max-width:100%;max-height:140px;display:block;margin:0 auto"></div></div>`:'';
+  document.getElementById('modalBody').innerHTML=`
+    <div class="fr"><div class="fg"><label>Email</label><input value="${a.email||''}" disabled></div><div class="fg"><label>Phone</label><input value="${a.phone||''}" disabled></div></div>
+    <div class="fr"><div class="fg"><label>ID Number</label><input value="${a.id_number||''}" disabled></div><div class="fg"><label>Employer</label><input value="${a.employer||''}" disabled></div></div>
+    <div class="fr"><div class="fg"><label>Branch</label><input value="${a.branch||''}" disabled></div><div class="fg"><label>Job Title</label><input value="${a.job_title||''}" disabled></div></div>
+    <div class="fr"><div class="fg"><label>Patterson Grade</label><input value="${a.patterson_grade||''}" disabled></div><div class="fg"><label>Signed at</label><input value="${a.signed_at||a.created_at}" disabled></div></div>
+    ${sig}
+  `;
+  document.getElementById('itemModal').classList.add('open');
+}
+function closeItemModal(){document.getElementById('itemModal').classList.remove('open')}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeItemModal()});
+</script>

@@ -1,0 +1,138 @@
+<!-- SITE SETTINGS -->
+
+<!-- ============ MAINTENANCE MODE ============ -->
+<% var maintOn = (settings.maintenance_mode === '1'); %>
+<div class="pnl" style="border:1.5px solid <%= maintOn ? '#d97706' : 'var(--border)' %>">
+  <div class="pnl-h" style="<%= maintOn ? 'background:#fffbeb' : '' %>">
+    <h3><i class="fas fa-triangle-exclamation" style="color:#d97706"></i> Maintenance Mode</h3>
+  </div>
+  <div class="pnl-b">
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;padding:.75rem 1rem;border-radius:10px;background:<%= maintOn ? '#fef3c7' : '#f1f5f4' %>;font-weight:600;color:<%= maintOn ? '#92400e' : '#334' %>">
+      <i class="fas fa-circle" style="font-size:.6rem;color:<%= maintOn ? '#d97706' : '#16a34a' %>"></i>
+      <% if (maintOn) { %>
+        Maintenance mode is <strong>ON</strong> — the public website is currently showing the maintenance page.
+      <% } else { %>
+        The website is <strong>LIVE</strong>. Visitors can browse normally.
+      <% } %>
+    </div>
+
+    <p style="color:var(--muted);font-size:.9rem;line-height:1.55;margin-bottom:1rem">
+      When maintenance mode is on, public visitors see a friendly &ldquo;Under Maintenance&rdquo; page.
+      You and other logged-in admins can still browse the live site and the CMS, so you can keep working and turn it back off at any time.
+    </p>
+
+    <form method="POST" action="/sacxc-cms/site/maintenance" id="maintForm">
+      <input type="hidden" name="confirm" value="">
+      <input type="hidden" name="maintenance_mode" value="<%= maintOn ? '0' : '1' %>">
+
+      <div class="fg">
+        <label>Message shown to visitors <span style="color:var(--muted);font-weight:500;font-size:.78rem">(optional — leave blank for the default text)</span></label>
+        <textarea name="maintenance_message" rows="2" placeholder="e.g. We are upgrading our systems and will be back by 5 PM. Thank you for your patience."><%= settings.maintenance_message || '' %></textarea>
+      </div>
+
+      <div class="factions" style="padding:.5rem 0 0">
+        <% if (maintOn) { %>
+          <button type="submit" class="fbtn g" id="maintBtn"><i class="fas fa-play"></i> Turn OFF Maintenance (Go Live)</button>
+        <% } else { %>
+          <button type="submit" class="fbtn" id="maintBtn" style="background:#d97706;color:#fff"><i class="fas fa-power-off"></i> Turn ON Maintenance Mode</button>
+        <% } %>
+        <a href="/" target="_blank" class="fbtn o"><i class="fas fa-external-link-alt"></i> Preview Site</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  var form = document.getElementById('maintForm');
+  if(!form) return;
+  var turningOn = <%= maintOn ? 'false' : 'true' %>;
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var msg = turningOn
+      ? 'Are you sure you want to TURN ON maintenance mode?\n\nThe public website will immediately show the "Under Maintenance" page to all visitors. You will still be able to browse the site and CMS while logged in.'
+      : 'Are you sure you want to TURN OFF maintenance mode?\n\nThe website will go LIVE again and be visible to all visitors.';
+    if (window.confirm(msg)) {
+      form.querySelector('input[name="confirm"]').value = 'yes';
+      var btn = document.getElementById('maintBtn');
+      if (btn) { btn.disabled = true; btn.style.opacity = '.7'; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+      form.submit();
+    }
+  });
+})();
+</script>
+<!-- ============ /MAINTENANCE MODE ============ -->
+
+<form method="POST" action="/sacxc-cms/site">
+<div class="pnl">
+  <div class="pnl-h"><h3><i class="fas fa-id-card"></i> Site Identity</h3></div>
+  <div class="pnl-b">
+    <div class="fr">
+      <div class="fg"><label>Short Name</label><input type="text" name="site_name" value="<%= settings.site_name || 'SACXC' %>"></div>
+      <div class="fg"><label>Full Name</label><input type="text" name="site_full_name" value="<%= settings.site_full_name || 'Southern Africa Customer Experience Council' %>"></div>
+    </div>
+    <div class="fg"><label>Tagline</label><input type="text" name="site_tagline" value="<%= settings.site_tagline || '' %>"></div>
+    <div class="fg"><label>Meta Description</label><textarea name="site_description" rows="3"><%= settings.site_description || '' %></textarea></div>
+  </div>
+</div>
+
+<div class="pnl">
+  <div class="pnl-h"><h3><i class="fas fa-phone"></i> Contact Details</h3></div>
+  <div class="pnl-b">
+    <div class="fr3">
+      <div class="fg"><label>Main Phone</label><input type="text" name="phone" value="<%= settings.phone || '' %>"></div>
+      <div class="fg"><label>Hotline 2</label><input type="text" name="phone2" value="<%= settings.phone2 || '' %>"></div>
+      <div class="fg"><label>Hotline 3</label><input type="text" name="phone3" value="<%= settings.phone3 || '' %>"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Email</label><input type="email" name="email" value="<%= settings.email || '' %>"></div>
+      <div class="fg"><label>Office Hours</label><input type="text" name="office_hours" value="<%= settings.office_hours || '' %>"></div>
+    </div>
+    <div class="fg"><label>Address</label><input type="text" name="address" value="<%= settings.address || '' %>"></div>
+    <!-- WhatsApp — powers the floating WhatsApp widget in the bottom-right of every page -->
+    <div class="fg">
+      <label><i class="fab fa-whatsapp" style="color:#25D366;margin-right:.3rem"></i> WhatsApp Number <span style="color:var(--muted);font-weight:500;font-size:.78rem">(used by the floating WhatsApp chat widget — include country code, e.g. +263 775 740 07)</span></label>
+      <input type="text" name="whatsapp" value="<%= settings.whatsapp || '' %>" placeholder="+263 775 740 07">
+    </div>
+  </div>
+</div>
+
+<div class="pnl">
+  <div class="pnl-h"><h3><i class="fas fa-hashtag"></i> Social Links</h3></div>
+  <div class="pnl-b">
+    <div class="fr">
+      <div class="fg"><label><i class="fab fa-facebook" style="color:#1877F2"></i> Facebook</label><input type="text" name="facebook" value="<%= settings.facebook || '' %>"></div>
+      <div class="fg"><label><i class="fab fa-x-twitter"></i> X / Twitter</label><input type="text" name="twitter" value="<%= settings.twitter || '' %>"></div>
+    </div>
+    <div class="fg"><label>Tawk.to Live Chat ID</label><input type="text" name="tawkto_id" value="<%= settings.tawkto_id || '' %>" placeholder="Paste Tawk.to property ID (leave empty to disable)"></div>
+  </div>
+</div>
+
+<div class="pnl">
+  <div class="pnl-h"><h3><i class="fas fa-chart-bar"></i> Headline Statistics</h3></div>
+  <div class="pnl-b">
+    <div class="fr">
+      <div class="fg"><label>Members (display)</label><input type="text" name="stats_members" value="<%= settings.stats_members || '1,800+' %>"></div>
+      <div class="fg"><label>Branches</label><input type="text" name="stats_branches" value="<%= settings.stats_branches || '21' %>"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Years Active</label><input type="text" name="stats_years" value="<%= settings.stats_years || '10+' %>"></div>
+      <div class="fg"><label>Founded</label><input type="text" name="stats_founded" value="<%= settings.stats_founded || '2012' %>"></div>
+    </div>
+  </div>
+</div>
+
+<div class="pnl">
+  <div class="pnl-h"><h3><i class="fas fa-bullseye"></i> About Content</h3></div>
+  <div class="pnl-b">
+    <div class="fg"><label>Mission</label><textarea name="mission" rows="3"><%= settings.mission || '' %></textarea></div>
+    <div class="fg"><label>Vision</label><textarea name="vision" rows="3"><%= settings.vision || '' %></textarea></div>
+    <div class="fg"><label>About Text (long)</label><textarea name="about_text" rows="6"><%= settings.about_text || '' %></textarea></div>
+  </div>
+</div>
+
+<div class="factions" style="padding:0 .1rem 1rem">
+  <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save All Settings</button>
+  <a href="/" target="_blank" class="fbtn o"><i class="fas fa-external-link-alt"></i> Preview Site</a>
+</div>
+</form>

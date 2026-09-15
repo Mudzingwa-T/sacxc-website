@@ -1,0 +1,78 @@
+<!-- USERS -->
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-users"></i> Admin Users</h3>
+    <button class="fbtn g" onclick="openUserModal()"><i class="fas fa-plus"></i> New User</button>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-users"></i><p>No users yet</p></div>
+    <% } else { %>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Created</th><th>Actions</th></tr></thead>
+        <tbody>
+          <% items.forEach(u=>{ %>
+            <tr>
+              <td><div class="flex"><div class="sb-av" style="width:32px;height:32px;font-size:.75rem;background:var(--navy)"><%= (u.name||'A').charAt(0).toUpperCase() %></div><strong><%= u.name %></strong></div></td>
+              <td><code><%= u.email %></code></td>
+              <td>
+                <% if(user && user.id !== u.id){ %>
+                  <form method="POST" action="/sacxc-cms/users/<%= u.id %>/role" style="display:inline">
+                    <select name="role" onchange="this.form.submit()" style="padding:.25rem .5rem;border:1.5px solid var(--border);border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer">
+                      <option value="superadmin" <%= u.role==='superadmin'?'selected':'' %>>Super Admin</option>
+                      <option value="admin" <%= u.role==='admin'?'selected':'' %>>Admin</option>
+                      <option value="editor" <%= u.role==='editor'?'selected':'' %>>Editor</option>
+                      <option value="viewer" <%= u.role==='viewer'?'selected':'' %>>Viewer</option>
+                    </select>
+                  </form>
+                <% } else { %>
+                  <span class="badge <%= u.role %>"><%= u.role %></span>
+                <% } %>
+              </td>
+              <td><%= new Date(u.created_at).toLocaleDateString() %></td>
+              <td>
+                <% if(user && user.id !== u.id){ %>
+                  <form method="POST" action="/sacxc-cms/users/<%= u.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete user <%= u.name %>?')"><button class="fbtn sm rd" type="submit"><i class="fas fa-trash"></i> Remove</button></form>
+                <% } else { %>
+                  <span class="badge draft">You</span>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+  </div>
+</div>
+
+<div class="modal-back" id="userModal">
+  <div class="modal">
+    <div class="modal-h"><h3>Create New User</h3><button class="modal-x" onclick="closeUserModal()"><i class="fas fa-times"></i></button></div>
+    <form method="POST" action="/sacxc-cms/signup">
+      <div class="modal-b">
+        <div class="fg"><label>Full Name *</label><input type="text" name="name" required></div>
+        <div class="fg"><label>Username / Email *</label><input type="text" name="email" required></div>
+        <div class="fr">
+          <div class="fg"><label>Password (min 12 chars) *</label><input type="password" name="password" minlength="12" required></div>
+          <div class="fg"><label>Confirm Password *</label><input type="password" name="confirm_password" minlength="12" required></div>
+        </div>
+        <div class="fg"><label>Role</label><select name="role">
+          <option value="editor">Editor (can create/edit content)</option>
+          <option value="admin">Admin (can delete + manage content)</option>
+          <option value="superadmin">Super Admin (full access)</option>
+          <option value="viewer">Viewer (read-only)</option>
+        </select></div>
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeUserModal()">Cancel</button>
+        <button type="submit" class="fbtn g"><i class="fas fa-user-plus"></i> Create User</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openUserModal(){document.getElementById('userModal').classList.add('open')}
+function closeUserModal(){document.getElementById('userModal').classList.remove('open')}
+document.getElementById('userModal').addEventListener('click',e=>{if(e.target.id==='userModal')closeUserModal()});
+</script>

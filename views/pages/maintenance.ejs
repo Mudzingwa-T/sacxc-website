@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#1a6b3c">
+  <title><%= (typeof settings !== 'undefined' && settings.site_name) || 'SACXC' %> — Under Maintenance</title>
+  <link rel="icon" type="image/png" href="/images/sacxc-logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#1a6b3c; --primary-dark:#0f4525; --primary-light:#2d8a52;
+      --secondary:#d4941a; --bg:#f7f9f7; --fg:#1f2a24; --muted:#5b6b62; --border:#e2e8e4;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:'Source Sans 3',system-ui,sans-serif;background:var(--bg);color:var(--fg);
+      min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;
+      background:linear-gradient(135deg,#f7f9f7 0%,#eef4f0 100%);
+    }
+    .wrap{max-width:600px;width:100%;text-align:center}
+    .card{
+      background:#fff;border:1px solid var(--border);border-radius:20px;
+      padding:3rem 2.25rem;box-shadow:0 20px 60px rgba(15,69,37,.08);
+    }
+    .logo{width:84px;height:84px;object-fit:contain;margin-bottom:1.25rem}
+    .icon{
+      width:72px;height:72px;border-radius:50%;
+      background:linear-gradient(135deg,var(--primary),var(--primary-light));
+      display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;
+      box-shadow:0 8px 24px rgba(26,107,60,.25);
+    }
+    .icon svg{width:34px;height:34px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;animation:spin 6s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    h1{font-family:'Montserrat',sans-serif;font-size:1.85rem;font-weight:800;color:var(--primary-dark);margin-bottom:.75rem;line-height:1.2}
+    .lead{font-size:1.08rem;color:var(--muted);line-height:1.6;margin-bottom:1.75rem}
+    .msg{
+      background:#fdf5e6;border:1px solid #f0e2c4;border-radius:12px;
+      padding:1rem 1.25rem;color:#6b4a14;font-size:.98rem;line-height:1.55;margin-bottom:1.75rem;text-align:left;
+    }
+    .contact{font-size:.95rem;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);padding-top:1.5rem}
+    .contact a{color:var(--primary);font-weight:600;text-decoration:none}
+    .contact a:hover{text-decoration:underline}
+    .badge{display:inline-block;background:rgba(26,107,60,.08);color:var(--primary);font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:.4rem .85rem;border-radius:999px;margin-bottom:1.25rem}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <img src="/images/sacxc-logo.png" alt="<%= (typeof settings !== 'undefined' && settings.site_name) || 'SACXC' %>" class="logo" onerror="this.style.display='none'">
+      <span class="badge">Scheduled Maintenance</span>
+      <div class="icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+      </div>
+      <h1>We&rsquo;ll be back shortly</h1>
+      <% var custom = (typeof settings !== 'undefined' && settings.maintenance_message) ? settings.maintenance_message.trim() : ''; %>
+      <p class="lead">Our website is currently undergoing scheduled maintenance to serve you better. Thank you for your patience.</p>
+      <% if (custom) { %>
+        <div class="msg"><%= custom %></div>
+      <% } %>
+      <div class="contact">
+        <% if (typeof settings !== 'undefined' && (settings.email || settings.phone)) { %>
+          Need to reach us in the meantime?<br>
+          <% if (settings.email) { %><a href="mailto:<%= settings.email %>"><%= settings.email %></a><% } %>
+          <% if (settings.email && settings.phone) { %> &nbsp;&bull;&nbsp; <% } %>
+          <% if (settings.phone) { %><a href="tel:<%= settings.phone %>"><%= settings.phone %></a><% } %>
+        <% } else { %>
+          Thank you for visiting the Southern Africa Customer Experience Council.
+        <% } %>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

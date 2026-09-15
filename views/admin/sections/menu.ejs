@@ -1,0 +1,64 @@
+<!-- NAVIGATION MENU (CMS-driven site nav) -->
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-bars"></i> Navigation Menu</h3>
+    <button class="fbtn g" onclick="openItemModal(null)"><i class="fas fa-plus"></i> New Menu Item</button>
+  </div>
+  <div class="pnl-b">
+    <p style="color:var(--muted,#64748b);margin:-4px 0 14px;font-size:.9rem">These items control the website's top navigation. Reorder with the sort number; untick <em>Active</em> to hide an item without deleting it.</p>
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-bars"></i><p>No menu items yet</p></div>
+    <% } else { %>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Label</th><th>URL</th><th>Order</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <% items.forEach(c=>{ %>
+            <tr>
+              <td><strong><%= c.label %></strong></td>
+              <td><code style="font-size:.85rem"><%= c.url %></code></td>
+              <td><%= c.sort_order %></td>
+              <td><span class="badge <%= c.active?'on':'off' %>"><%= c.active?'Active':'Hidden' %></span></td>
+              <td><div class="ic-acts">
+                <button class="be" onclick='openItemModal(<%- JSON.stringify(c).replace(/</g,"\\u003c") %>)'><i class="fas fa-edit"></i></button>
+                <form method="POST" action="/sacxc-cms/menu/<%= c.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete menu item?')"><button class="bd" type="submit"><i class="fas fa-trash"></i></button></form>
+              </div></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+  </div>
+</div>
+
+<div class="modal-back" id="itemModal">
+  <div class="modal">
+    <div class="modal-h"><h3 id="modalTitle">New Menu Item</h3><button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button></div>
+    <form id="itemForm" method="POST">
+      <div class="modal-b">
+        <div class="fr">
+          <div class="fg"><label>Label *</label><input type="text" name="label" id="f_label" required placeholder="About"></div>
+          <div class="fg"><label>URL *</label><input type="text" name="url" id="f_url" required placeholder="/about"></div>
+        </div>
+        <div class="fg"><label>Sort order</label><input type="number" name="sort_order" id="f_sort_order" value="1"></div>
+        <label class="chk-row"><input type="checkbox" name="active" id="f_active" value="1" checked> Active (visible in navigation)</label>
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeItemModal()">Cancel</button>
+        <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+function openItemModal(it){
+  document.getElementById('modalTitle').textContent=it?'Edit Menu Item':'New Menu Item';
+  document.getElementById('f_label').value=it?it.label:'';
+  document.getElementById('f_url').value=it?it.url:'';
+  document.getElementById('f_sort_order').value=it?it.sort_order:1;
+  document.getElementById('f_active').checked=it?!!it.active:true;
+  document.getElementById('itemForm').action=it?'/sacxc-cms/menu/'+it.id:'/sacxc-cms/menu';
+  document.getElementById('itemModal').classList.add('open');
+}
+function closeItemModal(){document.getElementById('itemModal').classList.remove('open')}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeItemModal()});
+</script>

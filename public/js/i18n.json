@@ -1,0 +1,51 @@
+{
+  "langs": {
+    "en": { "name": "English",    "flag": "🇬🇧", "dir": "ltr" },
+    "sn": { "name": "ChiShona",   "flag": "🇿🇼", "dir": "ltr" },
+    "nd": { "name": "isiNdebele", "flag": "🇿🇼", "dir": "ltr" },
+    "fr": { "name": "Français",   "flag": "🇫🇷", "dir": "ltr" },
+    "pt": { "name": "Português",  "flag": "🇵🇹", "dir": "ltr" },
+    "es": { "name": "Español",    "flag": "🇪🇸", "dir": "ltr" },
+    "ar": { "name": "العربية",    "flag": "🇸🇦", "dir": "rtl" },
+    "zh": { "name": "中文",        "flag": "🇨🇳", "dir": "ltr" }
+  },
+  "t": {
+    "nav.home":        { "en":"Home","sn":"Kumba","nd":"Ekhaya","fr":"Accueil","pt":"Início","es":"Inicio","ar":"الرئيسية","zh":"首页" },
+    "nav.about":       { "en":"About","sn":"Nezvedu","nd":"Mayelana","fr":"À propos","pt":"Sobre","es":"Acerca","ar":"عن","zh":"关于" },
+    "nav.who":         { "en":"Who We Are","sn":"Tisu Ndisu","nd":"Thina Sibonani","fr":"Qui sommes-nous","pt":"Quem Somos","es":"Quiénes Somos","ar":"من نحن","zh":"我们是谁" },
+    "nav.why":         { "en":"Why SACXC","sn":"Sei SACXC","nd":"Kungani SACXC","fr":"Pourquoi SACXC","pt":"Porquê SACXC","es":"Por qué SACXC","ar":"لماذا SACXC","zh":"为何选 SACXC" },
+    "nav.mgmt":        { "en":"Management Committee","sn":"Komiti Inotungamira","nd":"Ikomidi Yokuphatha","fr":"Comité de Direction","pt":"Comité Gestor","es":"Comité Directivo","ar":"لجنة الإدارة","zh":"管理委员会" },
+    "nav.branches":    { "en":"Our Branches","sn":"Matavi Edu","nd":"Amagatsha Ethu","fr":"Nos Branches","pt":"Nossas Filiais","es":"Nuestras Sucursales","ar":"فروعنا","zh":"我们的分会" },
+    "nav.achievements":{ "en":"Achievements","sn":"Zvatakwanisa","nd":"Impumelelo","fr":"Réalisations","pt":"Conquistas","es":"Logros","ar":"الإنجازات","zh":"成就" },
+    "nav.membership":  { "en":"Membership","sn":"Uenzi","nd":"Ubulunga","fr":"Adhésion","pt":"Filiação","es":"Membresía","ar":"العضوية","zh":"会员资格" },
+    "nav.info":        { "en":"Info Center","sn":"Nhau","nd":"Izindaba","fr":"Infos","pt":"Informações","es":"Info","ar":"معلومات","zh":"信息中心" },
+    "nav.news":        { "en":"News & Updates","sn":"Nhau Dzazvino","nd":"Izindaba","fr":"Actualités","pt":"Notícias","es":"Noticias","ar":"الأخبار","zh":"新闻" },
+    "nav.events":      { "en":"Events","sn":"Zviitiko","nd":"Imicimbi","fr":"Événements","pt":"Eventos","es":"Eventos","ar":"الفعاليات","zh":"活动" },
+    "nav.gallery":     { "en":"Gallery","sn":"Gyareri","nd":"Igalari","fr":"Galerie","pt":"Galeria","es":"Galería","ar":"المعرض","zh":"图库" },
+    "nav.resources":   { "en":"Resources","sn":"Zvinhu","nd":"Izinsiza","fr":"Ressources","pt":"Recursos","es":"Recursos","ar":"الموارد","zh":"资源" },
+    "nav.partners":    { "en":"Partners","sn":"Vashandi Pamwe","nd":"Abalingani","fr":"Partenaires","pt":"Parceiros","es":"Socios","ar":"الشركاء","zh":"合作伙伴" },
+    "nav.contact":     { "en":"Contact","sn":"Bata","nd":"Xhumana","fr":"Contact","pt":"Contacto","es":"Contacto","ar":"اتصل بنا","zh":"联系我们" },
+    "nav.join":        { "en":"Join SACXC","sn":"Joina SACXC","nd":"Joyina SACXC","fr":"Rejoindre SACXC","pt":"Aderir","es":"Únete","ar":"انضم إلينا","zh":"加入 SACXC" },
+
+    "hero.tagline":    { "en":"Team, Transparency, Justice","sn":"Timu, Kujeka, Kururamisira","nd":"Ithimba, Ukuhlaziya, Ubulungiswa","fr":"Équipe, Transparence, Justice","pt":"Equipa, Transparência, Justiça","es":"Equipo, Transparencia, Justicia","ar":"الفريق، الشفافية، العدالة","zh":"团结、透明、正义" },
+
+    "stats.members":   { "en":"Active Members","sn":"Nhengo Dziripo","nd":"Amalunga","fr":"Membres Actifs","pt":"Membros Ativos","es":"Miembros Activos","ar":"الأعضاء النشطون","zh":"活跃会员" },
+    "stats.branches":  { "en":"Branches Nationwide","sn":"Matavi Munyika","nd":"Amagatsha","fr":"Branches Nationales","pt":"Filiais","es":"Sucursales","ar":"الفروع","zh":"全国分会" },
+    "stats.years":     { "en":"Years of Service","sn":"Makore Atishanda","nd":"Iminyaka","fr":"Années de Service","pt":"Anos de Serviço","es":"Años de Servicio","ar":"سنوات الخدمة","zh":"服务年数" },
+    "stats.focus":     { "en":"Member Focused","sn":"Tinotarisa Nhengo","nd":"Igxile Emalungeni","fr":"Axé sur les Membres","pt":"Focado nos Membros","es":"Centrado en Miembros","ar":"التركيز على الأعضاء","zh":"以会员为本" },
+
+    "values.heading":  { "en":"Our Core Values","sn":"Tsika Dzedu","nd":"Izimvelaphi Zethu","fr":"Nos Valeurs","pt":"Valores Centrais","es":"Valores Centrales","ar":"قيمنا الأساسية","zh":"我们的核心价值观" },
+    "values.foundation":{ "en":"Our Foundation","sn":"Hwaro Hwedu","nd":"Isisekelo","fr":"Notre Fondation","pt":"A Nossa Base","es":"Nuestra Base","ar":"أسسنا","zh":"我们的基石" },
+    "values.team":     { "en":"Team","sn":"Timu","nd":"Ithimba","fr":"Équipe","pt":"Equipa","es":"Equipo","ar":"الفريق","zh":"团结" },
+    "values.transparency":{ "en":"Transparency","sn":"Kujeka","nd":"Ukukhanya","fr":"Transparence","pt":"Transparência","es":"Transparencia","ar":"الشفافية","zh":"透明" },
+    "values.justice":  { "en":"Justice","sn":"Kururamisira","nd":"Ubulungiswa","fr":"Justice","pt":"Justiça","es":"Justicia","ar":"العدالة","zh":"正义" },
+
+    "cta.readyJoin":   { "en":"Ready to Join the Movement?","sn":"Wakagadzirira Kubatana Nesu?","nd":"Usukulungele Ukujoyina?","fr":"Prêt à Nous Rejoindre?","pt":"Pronto para Aderir?","es":"¿Listo para Unirte?","ar":"هل أنت مستعد للانضمام؟","zh":"准备加入运动吗？" },
+    "cta.joinToday":   { "en":"Join SACXC Today","sn":"Joina SACXC Nhasi","nd":"Joyina SACXC Namuhla","fr":"Rejoindre Aujourd'hui","pt":"Aderir Hoje","es":"Únete Hoy","ar":"انضم اليوم","zh":"今天加入" },
+    "cta.contactUs":   { "en":"Contact Us","sn":"Taura Nesu","nd":"Xhumana Nathi","fr":"Contactez-nous","pt":"Contacte-nos","es":"Contáctanos","ar":"اتصل بنا","zh":"联系我们" },
+
+    "banner.title":    { "en":"Welcome to SACXC","sn":"Tinokugamuchirai kuSACXC","nd":"Siyakwamukela eSACXC","fr":"Bienvenue à SACXC","pt":"Bem-vindo à SACXC","es":"Bienvenido a SACXC","ar":"مرحباً بكم في SACXC","zh":"欢迎来到 SACXC" },
+
+    "lang.choose":     { "en":"Choose Language","sn":"Sarudza Mutauro","nd":"Khetha Ulimi","fr":"Choisir Langue","pt":"Escolher Idioma","es":"Elegir Idioma","ar":"اختر اللغة","zh":"选择语言" }
+  }
+}

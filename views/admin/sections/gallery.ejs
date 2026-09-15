@@ -1,0 +1,108 @@
+<!-- GALLERY -->
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-photo-film"></i> Media Gallery <span class="badge draft" style="margin-left:.4rem;background:var(--green-50);color:var(--navy)"><%= items.length %> photos</span></h3>
+    <button class="fbtn g" onclick="openItemModal(null)"><i class="fas fa-upload"></i> Upload Photo</button>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-image"></i><p>No photos yet — click Upload to start</p></div>
+    <% } else { %>
+      <div class="gal-grid">
+        <% items.forEach(g=>{ %>
+          <div class="gal-card">
+            <img src="<%= g.image_url %>" alt="<%= g.title || '' %>" loading="lazy">
+            <div class="gal-actions">
+              <button type="button" class="gal-edit" title="Edit" onclick='openItemModal(<%- JSON.stringify(g).replace(/</g,"\\u003c") %>)'><i class="fas fa-edit"></i></button>
+              <form method="POST" action="/sacxc-cms/gallery/<%= g.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete this photo?')"><button class="gal-del" type="submit" title="Delete"><i class="fas fa-trash"></i></button></form>
+            </div>
+            <div class="gal-info">
+              <h4><%= g.title || 'Untitled' %></h4>
+              <p><%= g.category || 'General' %><% if(g.caption){ %> · <span style="opacity:.75"><%= g.caption.substring(0,50) %><%= g.caption.length > 50 ? '…' : '' %></span><% } %></p>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<div class="modal-back" id="itemModal">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-h"><h3 id="galModalTitle">Upload Photo</h3><button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button></div>
+    <form id="galForm" method="POST" enctype="multipart/form-data">
+      <div class="modal-b">
+        <div class="fg">
+          <label id="galFileLbl">Photo File *</label>
+          <input type="file" name="image" id="f_gal_image" accept="image/*">
+          <small id="galFileHint" style="display:block;margin-top:.4rem;color:var(--muted);font-size:.78rem">Leave empty when editing to keep the existing photo.</small>
+          <input type="hidden" name="existing_image" id="f_gal_existing">
+          <div id="f_gal_preview" style="margin-top:.6rem"></div>
+        </div>
+        <div class="fg"><label>Title</label><input type="text" name="title" id="f_gal_title" placeholder="e.g. 2023 National Congress"></div>
+        <div class="fg"><label>Caption</label><input type="text" name="caption" id="f_gal_caption" placeholder="Optional caption"></div>
+        <div class="fg">
+          <label>Category</label>
+          <select name="category" id="f_gal_category">
+            <option value="general">General</option>
+            <option value="congress">Congress</option>
+            <option value="events">Events</option>
+            <option value="leadership">Leadership</option>
+            <option value="governance">Governance</option>
+            <option value="training">Training</option>
+            <option value="team">Team</option>
+          </select>
+        </div>
+        <div class="fg"><label>Display order</label><input type="number" name="sort_order" id="f_gal_sort" value="0" style="max-width:120px"></div>
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeItemModal()">Cancel</button>
+        <button type="submit" class="fbtn g" id="galSubmitBtn"><i class="fas fa-upload"></i> Upload</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+.gal-actions{position:absolute;top:8px;right:8px;display:flex;gap:6px;opacity:0;transition:opacity .2s;z-index:2}
+.gal-card:hover .gal-actions{opacity:1}
+.gal-edit,.gal-del{width:34px;height:34px;border-radius:50%;border:none;color:#fff;cursor:pointer;font-size:.78rem;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.gal-edit{background:#000056}
+.gal-edit:hover{background:#00003a}
+.gal-del{background:#dc3545}
+.gal-del:hover{background:#a8131b}
+.gal-card{position:relative}
+</style>
+
+<script>
+function openItemModal(it){
+  const editing = !!it;
+  document.getElementById('galModalTitle').textContent = editing ? 'Edit Photo' : 'Upload Photo';
+  document.getElementById('galSubmitBtn').innerHTML = editing
+    ? '<i class="fas fa-save"></i> Save Changes'
+    : '<i class="fas fa-upload"></i> Upload';
+  document.getElementById('galFileLbl').textContent = editing ? 'Replace Photo (optional)' : 'Photo File *';
+  const fileInput = document.getElementById('f_gal_image');
+  fileInput.required = !editing;
+  document.getElementById('galFileHint').style.display = editing ? 'block' : 'none';
+
+  document.getElementById('f_gal_title').value    = editing ? (it.title || '')    : '';
+  document.getElementById('f_gal_caption').value  = editing ? (it.caption || '')  : '';
+  document.getElementById('f_gal_category').value = editing ? (it.category || 'general') : 'general';
+  document.getElementById('f_gal_sort').value     = editing ? (it.sort_order || 0) : 0;
+  document.getElementById('f_gal_existing').value = editing ? (it.image_url || '') : '';
+
+  const preview = document.getElementById('f_gal_preview');
+  preview.innerHTML = editing && it.image_url
+    ? `<img src="${it.image_url}" style="max-height:140px;border-radius:8px;border:1px solid var(--border)">`
+    : '';
+
+  document.getElementById('galForm').action = editing
+    ? '/sacxc-cms/gallery/' + it.id
+    : '/sacxc-cms/gallery';
+
+  document.getElementById('itemModal').classList.add('open');
+}
+function closeItemModal(){document.getElementById('itemModal').classList.remove('open')}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeItemModal()});
+</script>

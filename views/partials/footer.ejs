@@ -1,0 +1,112 @@
+  <!-- CTA Band -->
+  <% if (typeof showCta === 'undefined' || showCta !== false) { %>
+  <section class="cta-band">
+    <div class="container cta-band-inner">
+      <h2><%= (typeof content!=='undefined' && content && content['home.closing_heading']) || 'Give your organization a regional — and continental — voice' %></h2>
+      <p>National CX associations and professional training institutes across all 16 SADC Member States are invited to join SACXC.</p>
+      <div class="cta-btns">
+        <a href="/membership" class="btn btn-white">Become a Member</a>
+        <a href="/get-involved" class="btn btn-outline-white">Get Involved</a>
+      </div>
+    </div>
+  </section>
+  <% } %>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <div class="footer-logo-wrap">
+            <span class="footer-logo-chip"><img src="/images/sacxc-logo.png" alt="Southern Africa Customer Experience Council" class="footer-logo-img"></span>
+          </div>
+          <p><%= (data.site.description) || "The regional council uniting Southern Africa's CX associations and professional training institutes under one standard — an affiliate of ACXCO." %></p>
+          <div class="footer-social">
+            <% if (data.site.facebook && data.site.facebook !== '#') { %><a href="<%= data.site.facebook %>" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><% } %>
+            <% if (data.site.linkedin && data.site.linkedin !== '#') { %><a href="<%= data.site.linkedin %>" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a><% } %>
+            <% if (data.site.twitter && data.site.twitter !== '#') { %><a href="<%= data.site.twitter %>" target="_blank" aria-label="X"><i class="fab fa-x-twitter"></i></a><% } %>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="/about">About the Council</a></li>
+            <li><a href="/membership">Membership</a></li>
+            <li><a href="/services">Our Services</a></li>
+            <li><a href="/our-members">Our Members</a></li>
+            <li><a href="/governance">Governance</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>The Council</h4>
+          <ul>
+            <li><a href="/acxco">ACXCO Affiliation</a></li>
+            <li><a href="/services">Accreditation Support</a></li>
+            <li><a href="/our-members">Across SADC</a></li>
+            <li><a href="/get-involved">Get Involved</a></li>
+            <li><a href="/get-involved">Contact the Secretariat</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Secretariat</h4>
+          <ul class="footer-contact">
+            <li><i class="fas fa-globe"></i> 16 SADC Member States</li>
+            <% if (data.site.phone) { %><li><i class="fas fa-phone"></i> <%= data.site.phone %></li><% } %>
+            <li><i class="fas fa-envelope"></i> <%= data.site.email %></li>
+            <li><i class="fas fa-map-marker-alt"></i> <%= data.site.address %></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <p>&copy; <%= new Date().getFullYear() %> <%= data.site.fullName || 'SACXC' %>. All rights reserved.</p>
+        <p>
+          <a href="/sacxc-cms/login" class="footer-staff"><i class="fas fa-lock"></i> Staff Login</a>
+          &nbsp;·&nbsp;
+          Designed &amp; Developed by <a href="<%= data.site.developerUrl || 'https://www.codelabsalliance.com' %>" target="_blank" rel="noopener"><%= data.site.developerCredit || 'Code Labs Alliance' %></a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <button class="back-top" id="backTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+  <!-- Live chat widget (CICM design) -->
+  <div class="livechat-widget" id="livechat">
+    <button class="livechat-toggle" id="livechatToggle" aria-label="Chat">
+      <i class="fas fa-comment-dots" id="chatIconOpen"></i>
+      <i class="fas fa-times" id="chatIconClose" style="display:none"></i>
+    </button>
+    <div class="livechat-box" id="livechatBox">
+      <div class="lc-header">
+        <img src="/images/favicon.png" alt="SACXC" width="28">
+        <div><strong>SACXC Support</strong><span class="lc-online">Online</span></div>
+      </div>
+      <div class="lc-body" id="lcBody">
+        <div class="lc-msg lc-bot"><%= data.site.livechatGreeting || "Hello! Ask me about membership, services, governance or how to get involved." %></div>
+        <div class="lc-chips" id="lcChips">
+          <button class="lc-chip" data-q="Tell me about membership">Membership</button>
+          <button class="lc-chip" data-q="What services does SACXC offer?">Our Services</button>
+          <button class="lc-chip" data-q="How is SACXC governed?">Governance</button>
+          <button class="lc-chip" data-q="How do I get involved?">Get involved</button>
+          <button class="lc-chip" data-q="How can I contact you?">Contact</button>
+        </div>
+      </div>
+      <div class="lc-contact" id="lcContact" style="display:none">
+        <input type="text" id="lcName" placeholder="Your name">
+        <input type="email" id="lcEmail" placeholder="Your email">
+        <button id="lcContactSend" class="lc-contact-btn"><i class="fas fa-paper-plane"></i> Send to team</button>
+      </div>
+      <div class="lc-input-row">
+        <input type="text" id="lcMsg" placeholder="Ask a question...">
+        <button id="lcSend" aria-label="Send"><i class="fas fa-paper-plane"></i></button>
+      </div>
+      <div class="lc-channels">
+        <a href="mailto:<%= data.site.livechatEmail || data.site.email %>" class="lc-em"><i class="fas fa-envelope"></i> Email</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!-- RESOURCES -->
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-file-lines"></i> Documents &amp; Resources</h3>
+    <button class="fbtn g" onclick="openItemModal(null)"><i class="fas fa-plus"></i> New Resource</button>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-file"></i><p>No resources yet</p></div>
+    <% } else { %>
+      <% items.forEach(r=>{ %>
+        <div class="ic">
+          <div style="width:48px;height:48px;border-radius:8px;background:var(--accent-50);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-file-<%= (r.file_type||'PDF').toLowerCase()==='pdf'?'pdf':'lines' %>"></i></div>
+          <div class="ic-info">
+            <div class="ic-title"><%= r.title %>
+              <% if(r.downloadable){ %><span class="badge on" style="margin-left:.4rem">Downloadable</span><% } else { %><span class="badge draft" style="margin-left:.4rem;background:var(--accent-50);color:var(--accent)">View-only</span><% } %>
+            </div>
+            <div class="ic-sub"><%= r.file_type || 'PDF' %> · <%= r.file_size || '—' %> · <%= (r.description||'').substring(0,80) %></div>
+          </div>
+          <div class="ic-acts">
+            <button class="be" onclick='openItemModal(<%- JSON.stringify(r).replace(/</g,"\\u003c") %>)'><i class="fas fa-edit"></i></button>
+            <form method="POST" action="/sacxc-cms/resources/<%= r.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete resource?')"><button class="bd" type="submit"><i class="fas fa-trash"></i></button></form>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</div>
+
+<div class="modal-back" id="itemModal">
+  <div class="modal" style="max-width:760px">
+    <div class="modal-h"><h3 id="modalTitle">New Resource</h3><button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button></div>
+    <form id="itemForm" method="POST" enctype="multipart/form-data">
+      <div class="modal-b">
+        <div class="fg"><label>Document Title</label><input type="text" name="title" id="f_title" required></div>
+        <div class="fg"><label>Description</label><textarea name="description" id="f_description" rows="2" placeholder="Brief description shown on the resources page"></textarea></div>
+        <div class="fr3">
+          <div class="fg"><label>File Type</label><select name="file_type" id="f_file_type"><option>PDF</option><option>DOCX</option><option>XLSX</option><option>PPT</option></select></div>
+          <div class="fg"><label>File Size</label><input type="text" name="file_size" id="f_file_size" placeholder="e.g. 2.4 MB"></div>
+          <div class="fg"><label>Sort order</label><input type="number" name="sort_order" id="f_sort_order" value="1"></div>
+        </div>
+        <div class="fg">
+          <label>Upload File from Your Computer</label>
+          <input type="file" name="file" id="f_file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+          <input type="hidden" name="existing_file_url" id="f_existing_file_url">
+          <small id="f_file_current" style="color:var(--muted);font-size:.78rem"></small>
+        </div>
+        <div class="fg">
+          <label>Document Preview Text (shown inside view-only modal)</label>
+          <div id="f_preview_content" class="rich-editor" data-name="preview_content" data-placeholder="Paste or type the document text here — this is what visitors read in view-only mode (no downloads)."></div>
+        </div>
+        <label class="chk-row" style="padding:.6rem .7rem;background:var(--green-50);border-radius:8px;border:1px solid var(--green-100);align-items:flex-start">
+          <input type="checkbox" name="downloadable" id="f_downloadable" value="1" style="margin-top:.2rem">
+          <span>Allow visitors to <strong>download</strong> this document<br><small style="color:var(--muted);font-weight:400">Leave unchecked for view-only mode (screenshot protection enabled). Only the Constitution should typically be downloadable.</small></span>
+        </label>
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeItemModal()">Cancel</button>
+        <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openItemModal(it){
+  document.getElementById('modalTitle').textContent=it?'Edit Resource':'New Resource';
+  ['title','description','file_size'].forEach(k=>document.getElementById('f_'+k).value=it?(it[k]||''):'');
+  document.getElementById('f_file_type').value=it?(it.file_type||'PDF'):'PDF';
+  document.getElementById('f_sort_order').value=it?it.sort_order:1;
+  document.getElementById('f_downloadable').checked=it?!!it.downloadable:false;
+  document.getElementById('f_existing_file_url').value=it?(it.file_url||''):'';
+  document.getElementById('f_file_current').textContent=it&&it.file_url?('Currently: '+it.file_url+' — upload a new file to replace'):'No file uploaded yet';
+  const ed=document.getElementById('f_preview_content');
+  if(ed._quill) ed._quill.root.innerHTML=it?(it.preview_content||''):'';
+  else ed.innerHTML=it?(it.preview_content||''):'';
+  document.getElementById('itemForm').action=it?'/sacxc-cms/resources/'+it.id:'/sacxc-cms/resources';
+  document.getElementById('itemModal').classList.add('open');
+}
+function closeItemModal(){document.getElementById('itemModal').classList.remove('open')}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeItemModal()});
+</script>

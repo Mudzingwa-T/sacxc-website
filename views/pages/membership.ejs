@@ -1,0 +1,51 @@
+<%- include('../partials/header', { pageTitle: 'Membership', pageDesc: "SACXC membership — multiply your reach, authority and voice regionally and, through ACXCO, continentally. See categories, benefits and how to join." }) %>
+<section class="page-hero" style="background-image:url('/images/page/network.jpg')"><div class="container"><span class="tag tag-light">Membership</span><h1>Multiply Your Reach, Your Authority and Your Voice</h1><p>For a national CX association or training institute anywhere in SADC, joining SACXC is not about ceding ground — it's about multiplying your reach, credibility and influence.</p></div></section>
+
+<section class="section"><div class="container">
+  <div class="section-head"><span class="tag">Membership Categories</span><h2>Three ways to belong</h2></div>
+  <div class="certs-grid">
+    <% data.membershipCategories.forEach(function(c){ %>
+    <div class="cert-card"><div class="cc-top"><span class="cc-abbr" style="font-size:1.6rem"><%= c.count %></span></div><h3><%= c.name %></h3><p><%= c.who %></p><p style="border-top:1px solid var(--border);padding-top:.8rem;margin-top:.8rem;font-size:.92rem"><strong style="color:var(--red)">Unlocks:</strong> <%= c.benefit %></p></div>
+    <% }) %>
+  </div>
+</div></section>
+
+<section class="section section-gray"><div class="container">
+  <div class="section-head"><span class="tag">Why Join</span><h2>Ten reasons to join — and nothing you trade away</h2></div>
+  <div class="benefits-grid">
+    <% data.valueCase.forEach(function(b,i){ %><div class="benefit"><span class="b-num"><%= String(i+1).padStart(2,'0') %></span><div><strong style="display:block;color:var(--navy);font-family:var(--font)"><%= b[0] %></strong><p style="margin:.25rem 0 0"><%= b[1] %></p></div></div><% }) %>
+  </div>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="section-head"><span class="tag">Get Started</span><h2>How to Join</h2></div>
+  <div class="steps-grid">
+    <% data.howToApply.forEach(function(s){ %><div class="step-card"><div class="step-num"><%= s.step %></div><h3><%= s.title %></h3><p><%= s.description %></p></div><% }) %>
+  </div>
+</div></section>
+
+<section class="section section-gray" id="apply"><div class="container" style="max-width:780px">
+  <div class="section-head"><span class="tag">Apply</span><h2>Membership &amp; Partnership Enquiry</h2></div>
+  <% if (typeof success !== 'undefined' && success) { %>
+    <div class="success-box"><i class="fas fa-check-circle"></i><h2>Thank you</h2><p>Your enquiry has reached the SACXC Secretariat. We will be in touch to begin the conversation.</p><a href="/" class="btn btn-red">Back to Home</a></div>
+  <% } else { %>
+    <% if (typeof error !== 'undefined' && error) { %><div class="success-msg" style="display:block;background:#fdeeee;color:#a11"><%= error %></div><% } %>
+    <div class="apply-form-wrap"><form action="/membership/apply" method="POST" class="cform">
+      <div class="fg"><label>Organization Name *</label><input name="employer" required placeholder="Your association, institute or organization"></div>
+      <div class="form-row">
+        <div class="fg"><label>Organization Type *</label><select name="patterson_grade" required><option value="">Select…</option><option>CX Association</option><option>Training Institute</option><option>Corporate or Partner</option></select></div>
+        <div class="fg"><label>Country *</label><select name="branch" required><option value="">Select…</option><% sadc.forEach(function(c){ %><option><%= c %></option><% }) %></select></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label>Contact Person *</label><input name="full_name" required></div>
+        <div class="fg"><label>Email *</label><input type="email" name="email" required></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label>Phone</label><input name="phone"></div>
+        <div class="fg"><label>Role / Title</label><input name="job_title"></div>
+      </div>
+      <button type="submit" class="btn btn-red w-full">Submit Enquiry</button>
+    </form></div>
+  <% } %>
+</div></section>
+<%- include('../partials/footer') %>

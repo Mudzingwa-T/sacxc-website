@@ -1,0 +1,70 @@
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-hand-holding-heart"></i> Member Benefits</h3>
+    <button class="fbtn g" onclick="openItemModal(null)"><i class="fas fa-plus"></i> New Benefit</button>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-gift"></i><p>No benefits yet</p></div>
+    <% } else { %>
+      <% items.forEach(b=>{ %>
+        <div class="ic">
+          <div style="width:48px;height:48px;border-radius:8px;background:var(--green-50);color:var(--navy);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fa-solid fa-<%= b.icon || 'check' %>"></i></div>
+          <div class="ic-info">
+            <div class="ic-title"><%= b.title %></div>
+            <div class="ic-sub" style="white-space:normal"><%= (b.description||'').substring(0,140) %></div>
+          </div>
+          <div class="ic-acts">
+            <button class="be" onclick='openItemModal(<%- JSON.stringify(b).replace(/</g,"\\u003c") %>)'><i class="fas fa-edit"></i></button>
+            <form method="POST" action="/sacxc-cms/benefits/<%= b.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete this benefit?')"><button class="bd" type="submit"><i class="fas fa-trash"></i></button></form>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</div>
+<div class="modal-back" id="itemModal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-h"><h3 id="modalTitle">New Benefit</h3><button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button></div>
+    <form id="itemForm" method="POST">
+      <div class="modal-b">
+        <div class="fg"><label>Benefit Title</label><input type="text" name="title" id="f_title" required placeholder="e.g. Workplace Protection"></div>
+        <div class="fg"><label>Description</label><textarea name="description" id="f_description" rows="3" required placeholder="Describe what this benefit means for members."></textarea></div>
+        <div class="fr">
+          <div class="fg"><label>Icon</label>
+            <select name="icon" id="f_icon">
+              <option value="shield-check">Shield — Protection</option>
+              <option value="users">Users — Collective</option>
+              <option value="graduation-cap">Graduation Cap — Training</option>
+              <option value="heart-pulse">Heart — Welfare</option>
+              <option value="shirt">Shirt — Regalia</option>
+              <option value="globe">Globe — International</option>
+              <option value="handshake">Handshake — Partnership</option>
+              <option value="briefcase">Briefcase — Career</option>
+              <option value="scale-balanced">Scale — Justice</option>
+              <option value="file-signature">File — Contracts</option>
+            </select>
+          </div>
+          <div class="fg"><label>Display order</label><input type="number" name="sort_order" id="f_sort_order" value="1"></div>
+        </div>
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeItemModal()">Cancel</button>
+        <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+function openItemModal(it){
+  document.getElementById('modalTitle').textContent=it?'Edit Benefit':'New Benefit';
+  document.getElementById('f_title').value=it?it.title:'';
+  document.getElementById('f_description').value=it?(it.description||''):'';
+  document.getElementById('f_icon').value=it?(it.icon||'shield-check'):'shield-check';
+  document.getElementById('f_sort_order').value=it?it.sort_order:1;
+  document.getElementById('itemForm').action=it?'/sacxc-cms/benefits/'+it.id:'/sacxc-cms/benefits';
+  document.getElementById('itemModal').classList.add('open');
+}
+function closeItemModal(){document.getElementById('itemModal').classList.remove('open')}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeItemModal()});
+</script>

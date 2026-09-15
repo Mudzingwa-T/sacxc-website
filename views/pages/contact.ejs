@@ -1,0 +1,28 @@
+<%- include('../partials/header', { pageTitle: 'Get Involved', pageDesc: "Get involved with SACXC — contact the Secretariat in Gaborone, Botswana to begin the conversation about membership or partnership." }) %>
+<section class="page-hero" style="background-image:url('/images/page/soundwave.jpg')"><div class="container"><span class="tag tag-light">Get Involved</span><h1>Join the Region's CX Community</h1><p>National CX associations and professional training institutes in any SADC Member State — and partners interested in collaboration — are invited to contact the SACXC Secretariat.</p></div></section>
+
+<section class="section"><div class="container">
+  <div class="contact-grid">
+    <div class="contact-info">
+      <h3>The case, simply put</h3>
+      <p><%= (content && content['contact.case']) || "A national CX association or training institute joining SACXC trades nothing away and gains a regional and continental voice, standards it didn't have to write alone, and a route to ACXCO recognition." %></p>
+      <div class="ci-items">
+        <div class="ci"><i class="fas fa-map-marker-alt"></i><div><small>Secretariat</small><p><%= data.site.address %></p></div></div>
+        <div class="ci"><i class="fas fa-envelope"></i><div><small>Email</small><p><a href="mailto:<%= data.site.email %>"><%= data.site.email %></a></p></div></div>
+        <% if(data.site.phone){ %><div class="ci"><i class="fas fa-phone"></i><div><small>Phone</small><p><a href="tel:<%= data.site.phone %>"><%= data.site.phone %></a></p></div></div><% } %>
+      </div>
+    </div>
+    <div class="contact-form-wrap">
+      <h3>Send a message</h3>
+      <% if (typeof success !== 'undefined' && success) { %><div class="success-msg" style="display:block"><%= success %></div><% } %>
+      <% if (typeof error !== 'undefined' && error) { %><div class="success-msg" style="display:block;background:#fdeeee;color:#a11"><%= error %></div><% } %>
+      <form class="cform" method="POST" action="/contact">
+        <div class="form-row"><div class="fg"><label>First name *</label><input name="first_name" required></div><div class="fg"><label>Last name *</label><input name="last_name" required></div></div>
+        <div class="form-row"><div class="fg"><label>Email *</label><input type="email" name="email" required></div><div class="fg"><label>Organization</label><input name="subject" placeholder="Your organization / subject"></div></div>
+        <div class="fg"><label>Message *</label><textarea name="message" rows="5" required></textarea></div>
+        <button type="submit" class="btn btn-red w-full">Send Message</button>
+      </form>
+    </div>
+  </div>
+</div></section>
+<%- include('../partials/footer') %>

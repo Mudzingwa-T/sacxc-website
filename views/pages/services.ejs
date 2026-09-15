@@ -1,0 +1,30 @@
+<%- include('../partials/header', { pageTitle: 'Our Services', pageDesc: "SACXC services — coordinated CX standards, accreditation support, regional research, advocacy, capacity-building and convening across the SADC region." }) %>
+<section class="page-hero" style="background-image:url('/images/page/soundwave.jpg')"><div class="container"><span class="tag tag-light">Our Services</span><h1>Services Built Around Six Pillars</h1><p><%= (content && content['services.intro']) || 'Standards, accreditation support, research, advocacy, capacity-building and convening — delivered regionally so no member has to build them alone.' %></p></div></section>
+
+<section class="section"><div class="container">
+  <div class="services-grid">
+    <% data.services.forEach(function(s){ %>
+    <div class="svc-card lg"><div class="svc-icon lg"><i class="fas fa-<%= s.icon %>"></i></div><h3><%= s.title %></h3><p><%= s.description %></p></div>
+    <% }) %>
+  </div>
+</div></section>
+
+<section class="section section-gray"><div class="container">
+  <div class="section-head"><span class="tag">How We Work</span><h2>Coordinate, convene, support — never compete</h2></div>
+  <div class="four-grid">
+    <div class="learn-card"><i class="fas fa-scale-balanced"></i><h4>Coordinate</h4><p>We coordinate SADC-wide standards and accreditation support; members deliver programmes locally.</p></div>
+    <div class="learn-card"><i class="fas fa-handshake"></i><h4>Convene</h4><p>Regional General Meetings, forums and a standing peer network across the SADC states.</p></div>
+    <div class="learn-card"><i class="fas fa-people-group"></i><h4>Support</h4><p>Mentorship and governance guidance that build capacity for newer and smaller members.</p></div>
+    <div class="learn-card"><i class="fas fa-shield-halved"></i><h4>Protect Independence</h4><p>Members keep their own brand, mandate, members, students and revenue.</p></div>
+  </div>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="section-head"><span class="tag">What We Coordinate</span><h2>Regional Standards &amp; Frameworks</h2></div>
+  <div class="certs-grid">
+    <% data.standards.forEach(function(c){ %>
+    <div class="cert-card"><div class="cc-icon"><i class="fas fa-<%= c.icon %>"></i></div><div class="cc-top"><span class="cc-abbr"><%= c.abbr %></span><span class="cc-dur"><i class="fas fa-layer-group"></i> <%= c.tag %></span></div><h3><%= c.title %></h3><p><%= c.description %></p></div>
+    <% }) %>
+  </div>
+</div></section>
+<%- include('../partials/footer') %>

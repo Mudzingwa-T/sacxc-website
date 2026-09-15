@@ -1,0 +1,48 @@
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-clipboard-list"></i> Audit Trail <span class="badge draft" style="margin-left:.4rem;background:var(--green-50);color:var(--navy)"><%= items.length %> events</span></h3>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <a href="/sacxc-cms/audit/export.csv" class="fbtn o"><i class="fas fa-file-csv"></i> Export CSV</a>
+      <a href="/sacxc-cms/audit/biweekly.csv" class="fbtn g"><i class="fas fa-download"></i> Bi-weekly Report</a>
+    </div>
+  </div>
+  <div class="pnl-b">
+    <% if(!isDeveloper){ %>
+      <div style="padding:.9rem 1rem;background:var(--accent-50);color:var(--accent);border-radius:8px;margin-bottom:1rem;font-size:.88rem;display:flex;align-items:flex-start;gap:.6rem">
+        <i class="fas fa-eye" style="margin-top:.15rem"></i>
+        <span>You have <strong>read-only</strong> access to the audit trail. Only the developer (<code>info@codelabsalliance.com</code>) can clear or modify entries.</span>
+      </div>
+    <% } %>
+
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-clipboard-list"></i><p>No audit events recorded yet.</p></div>
+    <% } else { %>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>When</th><th>Who</th><th>Action</th><th>Target</th><th>Details</th></tr></thead>
+        <tbody>
+          <% items.forEach(a=>{ %>
+            <tr>
+              <td style="white-space:nowrap;font-size:.78rem;color:var(--muted)"><%= new Date(a.created_at).toLocaleString() %></td>
+              <td>
+                <strong><%= a.user_name || '—' %></strong>
+                <div style="font-size:.7rem;color:var(--muted)"><span class="badge <%= a.user_role==='superadmin'?'on':'draft' %>"><%= a.user_role || 'unknown' %></span></div>
+              </td>
+              <td><span class="badge <%= a.action&&a.action.includes('delete')?'off':(a.action&&a.action.includes('approve')?'on':'draft') %>"><%= a.action %></span></td>
+              <td><%= a.entity %><% if(a.entity_id){ %> <code style="font-size:.7rem">#<%= a.entity_id %></code><% } %></td>
+              <td style="font-size:.82rem;max-width:320px"><%= (a.details||'').substring(0,140) %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+
+    <% if(isDeveloper && items && items.length > 0){ %>
+      <div style="margin-top:1rem;padding:.8rem;background:rgba(220,38,38,.05);border:1px solid rgba(220,38,38,.15);border-radius:8px">
+        <form method="POST" action="/sacxc-cms/audit/clear" onsubmit="return confirm('Permanently delete ALL audit log entries older than 6 months? This cannot be undone.')" style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+          <span style="color:var(--red);font-weight:600;font-size:.85rem"><i class="fas fa-exclamation-triangle"></i> Developer-only:</span>
+          <button type="submit" class="fbtn sm rd">Prune entries older than 6 months</button>
+        </form>
+      </div>
+    <% } %>
+  </div>
+</div>

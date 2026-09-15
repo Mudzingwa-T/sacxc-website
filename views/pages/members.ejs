@@ -1,0 +1,12 @@
+<%- include('../partials/header', { pageTitle: 'Our Members', pageDesc: "SACXC members — 6 CX associations and 15 professional training institutes across all 16 SADC Member States." }) %>
+<section class="page-hero" style="background-image:url('/images/page/continental.jpg')"><div class="container"><span class="tag tag-light">Our Members</span><h1>Our Members</h1><p><%= (content && content['members.intro']) || "SACXC's membership brings together 6 national CX associations and 15 professional training institutes from across the SADC region — one regional community, sixteen countries." %></p></div></section>
+
+<section class="section"><div class="container">
+  <div class="section-head"><span class="tag">Geographic Coverage</span><h2>Across all 16 SADC Member States</h2><p class="sub">Member organizations, logos and country details are managed in the Council's CMS. The coverage below shows the 16 SADC states across which SACXC's members operate.</p></div>
+  <div class="offices-grid">
+    <% data.offices.forEach(function(o){ %>
+    <div class="office-card"><div class="oc-flaghead"><span class="fi fi-<%= o.iso %> oc-flagimg"></span><span class="oc-code"><%= o.code %></span></div><h3><%= o.country %></h3><% if(o.region){ %><p class="oc-p"><%= o.region %></p><% } %><% if(o.note){ %><p><%= o.note %></p><% } %></div>
+    <% }) %>
+  </div>
+</div></section>
+<%- include('../partials/footer') %>

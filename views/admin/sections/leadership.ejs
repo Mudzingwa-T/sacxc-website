@@ -1,0 +1,72 @@
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-user-tie"></i> Management Committee &amp; Leadership</h3>
+    <button class="fbtn g" onclick="openItemModal(null)"><i class="fas fa-plus"></i> New Member</button>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-users"></i><p>No leadership members yet</p></div>
+    <% } else { %>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Photo</th><th>Name</th><th>Position</th><th>Order</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <% items.forEach(l=>{ %>
+            <tr>
+              <td><% if(l.image_url){ %><img src="<%= l.image_url %>" style="width:40px;height:50px;border-radius:6px;object-fit:cover"><% } else { %><div style="width:40px;height:50px;border-radius:6px;background:var(--green-50);display:flex;align-items:center;justify-content:center;color:var(--navy)"><i class="fas fa-user"></i></div><% } %></td>
+              <td><strong><%= l.name %></strong></td>
+              <td><%= l.position %></td>
+              <td><%= l.sort_order %></td>
+              <td><span class="badge <%= l.active?'on':'off' %>"><%= l.active?'Active':'Hidden' %></span></td>
+              <td><div class="ic-acts">
+                <button class="be" onclick='openItemModal(<%- JSON.stringify(l).replace(/</g,"\\u003c") %>)'><i class="fas fa-edit"></i></button>
+                <form method="POST" action="/sacxc-cms/leadership/<%= l.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete this member?')"><button class="bd" type="submit"><i class="fas fa-trash"></i></button></form>
+              </div></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table></div>
+    <% } %>
+  </div>
+</div>
+<div class="modal-back" id="itemModal">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-h"><h3 id="modalTitle">New Member</h3><button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button></div>
+    <form id="itemForm" method="POST" enctype="multipart/form-data">
+      <div class="modal-b">
+        <div class="fg"><label>Full Name</label><input type="text" name="name" id="f_name" required></div>
+        <div class="fg"><label>Position</label><input type="text" name="position" id="f_position" required placeholder="e.g. General Secretary"></div>
+        <div class="fg"><label>Biography</label><div id="f_bio" class="rich-editor" data-name="bio" data-simple="1" data-placeholder="Short bio shown on the Management Committee page."></div></div>
+        <div class="fg"><label>Photo (portrait, rectangular)</label><input type="file" name="image" accept="image/*"><input type="hidden" name="existing_image" id="f_existing_image"><div id="f_img_preview" style="margin-top:.5rem"></div></div>
+        <div class="fg"><label>LinkedIn URL (optional)</label><input type="url" name="linkedin" id="f_linkedin" placeholder="https://linkedin.com/in/…"></div>
+        <div class="fr">
+          <div class="fg"><label>Display order</label><input type="number" name="sort_order" id="f_sort_order" value="1"></div>
+          <label class="chk-row"><input type="checkbox" name="active" id="f_active" value="1" checked> Visible on public site</label>
+        </div>
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeItemModal()">Cancel</button>
+        <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+function openItemModal(it){
+  document.getElementById('modalTitle').textContent=it?'Edit Member':'New Member';
+  document.getElementById('f_name').value=it?it.name:'';
+  document.getElementById('f_position').value=it?it.position:'';
+  const ed=document.getElementById('f_bio');
+  if(ed._quill) ed._quill.root.innerHTML=it?(it.bio||''):'';
+  else ed.innerHTML=it?(it.bio||''):'';
+  document.getElementById('f_existing_image').value=it?(it.image_url||''):'';
+  document.getElementById('f_linkedin').value=it?(it.linkedin||''):'';
+  document.getElementById('f_sort_order').value=it?it.sort_order:1;
+  document.getElementById('f_active').checked=it?!!it.active:true;
+  const ip=document.getElementById('f_img_preview');
+  ip.innerHTML=it&&it.image_url?`<img src="${it.image_url}" style="max-height:120px;border-radius:8px;border:1px solid var(--border)">`:'';
+  document.getElementById('itemForm').action=it?'/sacxc-cms/leadership/'+it.id:'/sacxc-cms/leadership';
+  document.getElementById('itemModal').classList.add('open');
+}
+function closeItemModal(){document.getElementById('itemModal').classList.remove('open')}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeItemModal()});
+</script>

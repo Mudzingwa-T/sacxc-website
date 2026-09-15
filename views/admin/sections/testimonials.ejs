@@ -1,0 +1,58 @@
+<!-- TESTIMONIALS -->
+<div class="pnl">
+  <div class="pnl-h">
+    <h3><i class="fas fa-quote-right"></i> Member Testimonials</h3>
+    <button class="fbtn g" onclick="openItemModal(null)"><i class="fas fa-plus"></i> New Testimonial</button>
+  </div>
+  <div class="pnl-b">
+    <% if(!items || items.length===0){ %>
+      <div class="empty"><i class="fas fa-comment-dots"></i><p>No testimonials yet</p></div>
+    <% } else { %>
+      <% items.forEach(t=>{ %>
+        <div class="ic">
+          <div style="width:48px;height:48px;border-radius:8px;background:var(--gold-50);color:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-quote-right"></i></div>
+          <div class="ic-info">
+            <div class="ic-title" style="white-space:normal;overflow:visible;font-size:.85rem;font-weight:500">"<%= (t.text||'').substring(0,120) %><%= (t.text||'').length>120?'…':'' %>"</div>
+            <div class="ic-sub"><strong><%= t.role || 'Member' %></strong> · <%= t.branch || 'Branch' %></div>
+          </div>
+          <div class="ic-acts">
+            <button class="be" onclick='openItemModal(<%- JSON.stringify(t).replace(/</g,"\\u003c") %>)'><i class="fas fa-edit"></i></button>
+            <form method="POST" action="/sacxc-cms/testimonials/<%= t.id %>/delete" style="display:inline" onsubmit="return confirmDel('Delete testimonial?')"><button class="bd" type="submit"><i class="fas fa-trash"></i></button></form>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</div>
+
+<div class="modal-back" id="itemModal">
+  <div class="modal">
+    <div class="modal-h"><h3 id="modalTitle">New Testimonial</h3><button class="modal-x" onclick="closeItemModal()"><i class="fas fa-times"></i></button></div>
+    <form id="itemForm" method="POST">
+      <div class="modal-b">
+        <div class="fg"><label>Testimonial Text *</label><textarea name="text" id="f_text" rows="4" required maxlength="500"></textarea></div>
+        <div class="fr">
+          <div class="fg"><label>Role</label><input type="text" name="role" id="f_role" placeholder="Energy Technician"></div>
+          <div class="fg"><label>Branch</label><input type="text" name="branch" id="f_branch" placeholder="Harare Branch"></div>
+        </div>
+        <div class="fg"><label>Sort order</label><input type="number" name="sort_order" id="f_sort_order" value="1"></div>
+      </div>
+      <div class="modal-f">
+        <button type="button" class="fbtn o" onclick="closeItemModal()">Cancel</button>
+        <button type="submit" class="fbtn g"><i class="fas fa-save"></i> Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openItemModal(it){
+  document.getElementById('modalTitle').textContent=it?'Edit Testimonial':'New Testimonial';
+  ['text','role','branch'].forEach(k=>document.getElementById('f_'+k).value=it?(it[k]||''):'');
+  document.getElementById('f_sort_order').value=it?it.sort_order:1;
+  document.getElementById('itemForm').action=it?'/sacxc-cms/testimonials/'+it.id:'/sacxc-cms/testimonials';
+  document.getElementById('itemModal').classList.add('open');
+}
+function closeItemModal(){document.getElementById('itemModal').classList.remove('open')}
+document.getElementById('itemModal').addEventListener('click',e=>{if(e.target.id==='itemModal')closeItemModal()});
+</script>
